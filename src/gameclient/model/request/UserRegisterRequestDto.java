@@ -12,13 +12,13 @@ package gameclient.model.request;
 public class UserRegisterRequestDto {
 
     private String username;
-    private String nickName;
     private String password;
+    private String nickName;
 
     public UserRegisterRequestDto() {
     }
 
-    public UserRegisterRequestDto(String username, String nickName, String password) {
+    public UserRegisterRequestDto(String username, String password, String nickName) {
         this.username = username;
         this.nickName = nickName;
         this.password = password;
