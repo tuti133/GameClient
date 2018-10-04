@@ -9,12 +9,6 @@ package gameclient.util;
  *
  * @author Admin
  */
-public interface Constant {
-    String BASE_URL = "http://localhost:8080/api/";
-    String ERROR = "1";
-    String ONLINE_STATUS = "0";
-    String OFFLINE_STATUS = "1";
-    String AVAILABLE_STATUS = "2";
-    String BUSY_STATUS = "3";
-    
+public interface ToObject {
+    Object[] toObject();
 }

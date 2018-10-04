@@ -7,6 +7,7 @@ package gameclient.controller;
 
 import gameclient.model.ResponseDto;
 import gameclient.model.request.UserRegisterRequestDto;
+import gameclient.model.response.GetOnlineUserResponseDto;
 import gameclient.util.HttpClientUtils;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,12 @@ public class UserController {
         params.add(new BasicNameValuePair("password", requestDto.getPassword()));
         params.add(new BasicNameValuePair("nickName", requestDto.getNickName()));
         ResponseDto response = HttpClientUtils.requestPost("register", params, ResponseDto.class);
+        return response;
+    }
+    
+    public GetOnlineUserResponseDto getOnlineUser(String status) throws IOException{
+        String url = String.format("users?status=%s",status);
+        GetOnlineUserResponseDto response = HttpClientUtils.requestGet(url, GetOnlineUserResponseDto.class);
         return response;
     }
 }

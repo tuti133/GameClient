@@ -5,17 +5,107 @@
  */
 package gameclient.view;
 
+import gameclient.controller.UserController;
+import gameclient.model.User;
+import gameclient.model.response.GetOnlineUserResponseDto;
+import gameclient.util.Constant;
+import gameclient.util.UserInfo;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+
 /**
  *
  * @author Admin
  */
 public class DashBoardFrm extends javax.swing.JFrame {
 
+    private final UserController userController = new UserController();
+    private final String AVAILABLE = "Available";
+    private final String BUSY = "Busy";
+
     /**
      * Creates new form DashBoardFrm
      */
     public DashBoardFrm() {
         initComponents();
+        lbNickname.setText(String.format("Nickname: %s", UserInfo.getInstance().getNickName()));
+        lbScore.setText(String.format("Score: %d", UserInfo.getInstance().getScore()));
+        TableColumnModel tcm = tblHome.getColumnModel();
+        tcm.removeColumn(tcm.getColumn(0));
+        setupData();
+        tblHome.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                JTable table = (JTable) mouseEvent.getSource();
+                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    int id = Integer.parseInt(String.valueOf(model.getValueAt(table.getSelectedRow(), 0)));
+                    if (id == UserInfo.getInstance().getId()) {
+                        return;
+                    }
+                    int r = showConfirm(String.format("Bạn muốn thách đấu với %s?",
+                            String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
+                    if (r == JOptionPane.YES_OPTION) {
+                        showMessage("OK");
+                    }
+                }
+            }
+        });
+    }
+
+    private int showConfirm(String message) {
+        return JOptionPane.showConfirmDialog(this, message, "Confirm", JOptionPane.YES_NO_OPTION);
+    }
+
+    private void setupData() {
+        DefaultTableModel model = (DefaultTableModel) tblHome.getModel();
+        model.setRowCount(0);
+        String value = String.valueOf(cbStatus.getSelectedItem());
+        String status;
+        switch (value) {
+            case BUSY: {
+                status = Constant.BUSY_STATUS;
+                break;
+            }
+            case AVAILABLE: {
+                status = Constant.AVAILABLE_STATUS;
+                break;
+            }
+            default:
+                status = Constant.ONLINE_STATUS;
+        }
+        List<User> users = getOnlineUser(status);
+        for (User u : users) {
+            model.addRow(u.toObject());
+        }
+    }
+
+    private List<User> getOnlineUser(String status) {
+        try {
+            GetOnlineUserResponseDto response = userController.getOnlineUser(status);
+            if (response == null) {
+                showMessage("Lỗi");
+                return null;
+            }
+            return response.getUsers();
+        } catch (IOException ex) {
+            Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    private void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
     }
 
     /**
@@ -49,16 +139,37 @@ public class DashBoardFrm extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Nickname", "Total Score", "Status", "Action"
+                "", "Nickname", "Total Score", "Status"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblHome);
+        if (tblHome.getColumnModel().getColumnCount() > 0) {
+            tblHome.getColumnModel().getColumn(0).setResizable(false);
+        }
 
         lbNickname.setText("Nickname");
 
         lbScore.setText("Score");
 
-        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Available", "Busy" }));
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All","Available", "Busy" }));
+        cbStatus.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbStatusItemStateChanged(evt);
+            }
+        });
+        cbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusActionPerformed(evt);
+            }
+        });
 
         btnLogout.setText("Logout");
         btnLogout.addActionListener(new java.awt.event.ActionListener() {
@@ -156,6 +267,14 @@ public class DashBoardFrm extends javax.swing.JFrame {
         this.dispose();
         new GamePlayFrm().setVisible(true);
     }//GEN-LAST:event_btnSoloRandomActionPerformed
+
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbStatusActionPerformed
+
+    private void cbStatusItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbStatusItemStateChanged
+        setupData();
+    }//GEN-LAST:event_cbStatusItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

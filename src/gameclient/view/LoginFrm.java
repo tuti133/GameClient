@@ -9,6 +9,7 @@ import gameclient.controller.LoginController;
 import gameclient.model.request.UserLoginRequestDto;
 import gameclient.model.response.UserLoginResponseDto;
 import gameclient.util.Constant;
+import gameclient.util.UserInfo;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,9 @@ import javax.swing.JOptionPane;
  * @author Admin
  */
 public class LoginFrm extends javax.swing.JFrame {
+
     private final LoginController loginController = new LoginController();
+
     /**
      * Creates new form LoginFrm
      */
@@ -131,15 +134,18 @@ public class LoginFrm extends javax.swing.JFrame {
         UserLoginRequestDto userDto = new UserLoginRequestDto(username, password);
         try {
             UserLoginResponseDto response = loginController.login(userDto);
-            if(response == null){
+            if (response == null) {
                 JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi");
                 return;
             }
-            if(response.getErrorCode().equals(Constant.ERROR)){
+            if (response.getErrorCode().equals(Constant.ERROR)) {
 
                 JOptionPane.showMessageDialog(this, response.getMsg());
                 return;
             }
+            UserInfo.getInstance().setNickName(response.getUser().getNickName());
+            UserInfo.getInstance().setScore(response.getUser().getScore());
+            UserInfo.getInstance().setId(response.getUser().getId());
             this.dispose();
             DashBoardFrm homeFrm = new DashBoardFrm();
             homeFrm.setVisible(true);

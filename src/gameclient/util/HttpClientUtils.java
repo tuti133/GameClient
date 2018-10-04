@@ -20,6 +20,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -67,4 +68,17 @@ public class HttpClientUtils {
         return responseDto;
     }
 
+    public static <T extends ResponseDto> T requestGet(String url, Class<T> clazz) throws UnsupportedEncodingException, IOException {
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(Constant.BASE_URL + url);
+        HttpResponse response = client.execute(request);
+        String responseStr = HttpClientUtils.getResponseAsString(response);
+        if (responseStr == null) {
+            return null;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+        T responseDto = objectMapper.readValue(responseStr, clazz);
+        return responseDto;
+    }
 }
