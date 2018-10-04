@@ -10,6 +10,8 @@ import gameclient.model.request.UserLoginRequestDto;
 import gameclient.model.response.UserLoginResponseDto;
 import gameclient.util.Constant;
 import gameclient.util.UserInfo;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +30,17 @@ public class LoginFrm extends javax.swing.JFrame {
      */
     public LoginFrm() {
         initComponents();
+        this.getRootPane().setDefaultButton(btnLogin);
+        btnLogin.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent key) {
+
+                if (key.getKeyChar() == KeyEvent.VK_ENTER) {
+                    btnLogin.doClick();
+                }
+
+            }
+        });
     }
 
     /**
