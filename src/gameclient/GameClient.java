@@ -5,6 +5,9 @@
  */
 package gameclient;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import gameclient.view.LoginFrm;
 
 /**
@@ -13,12 +16,19 @@ import gameclient.view.LoginFrm;
  */
 public class GameClient {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        LoginFrm loginFrm = new LoginFrm();
-        loginFrm.setVisible(true);
-    }
-    
+	/**
+	 * @param args the command line arguments
+	 */
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		
+		LoginFrm loginFrm = new LoginFrm();
+		loginFrm.setVisible(true);
+	}
+
 }
