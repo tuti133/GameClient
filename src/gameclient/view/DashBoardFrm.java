@@ -8,9 +8,9 @@ package gameclient.view;
 import gameclient.controller.UserController;
 import gameclient.model.User;
 import gameclient.model.response.GetOnlineUserResponseDto;
+import gameclient.util.ClientSocket;
 import gameclient.util.Constant;
 import gameclient.util.UserInfo;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -21,27 +21,46 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import gameclient.listener.OnHaveMessageListener;
 
 /**
  *
  * @author Admin
  */
-public class DashBoardFrm extends javax.swing.JFrame {
+public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageListener {
 
     private final UserController userController = new UserController();
     private final String AVAILABLE = "Available";
     private final String BUSY = "Busy";
+    private ClientSocket client = null;
 
     /**
      * Creates new form DashBoardFrm
      */
     public DashBoardFrm() {
         initComponents();
+        try {
+            //send first message to server for register id
+            client = new ClientSocket();
+            client.setOnHaveMessageListener(this);
+            client.sendMessage(String.valueOf(UserInfo.getInstance().getId()));
+            
+        } catch (Exception ex) {
+            Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         lbNickname.setText(String.format("Nickname: %s", UserInfo.getInstance().getNickName()));
         lbScore.setText(String.format("Score: %d", UserInfo.getInstance().getScore()));
+
+        //hidden column id
         TableColumnModel tcm = tblHome.getColumnModel();
         tcm.removeColumn(tcm.getColumn(0));
+
         setupData();
+        addEventHandle();
+    }
+
+    private void addEventHandle() {
         tblHome.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
@@ -56,6 +75,7 @@ public class DashBoardFrm extends javax.swing.JFrame {
                     int r = showConfirm(String.format("Bạn muốn thách đấu với %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {
+                        client.sendMessage(String.valueOf(id));
                         showMessage("OK");
                     }
                 }
@@ -85,9 +105,11 @@ public class DashBoardFrm extends javax.swing.JFrame {
                 status = Constant.ONLINE_STATUS;
         }
         List<User> users = getOnlineUser(status);
-        for (User u : users) {
-            model.addRow(u.toObject());
-        }
+        users.stream().forEach(u -> {
+            if (u.getId() != UserInfo.getInstance().getId()) {
+                model.addRow(u.toObject());
+            }
+        });
     }
 
     private List<User> getOnlineUser(String status) {
@@ -288,4 +310,9 @@ public class DashBoardFrm extends javax.swing.JFrame {
     private javax.swing.JLabel lbScore;
     private javax.swing.JTable tblHome;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onHaveRequest(String message) {
+        int r = showConfirm(message);
+    }
 }
