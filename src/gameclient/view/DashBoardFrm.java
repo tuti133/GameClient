@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import gameclient.listener.OnHaveMessageListener;
+import gameclient.util.TimeMatch;
 
 /**
  *
@@ -44,11 +45,10 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             client = new ClientSocket();
             client.setOnHaveMessageListener(this);
             client.sendMessage(String.valueOf(UserInfo.getInstance().getId()));
-            
         } catch (Exception ex) {
             Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         lbNickname.setText(String.format("Nickname: %s", UserInfo.getInstance().getNickName()));
         lbScore.setText(String.format("Score: %d", UserInfo.getInstance().getScore()));
 
@@ -314,5 +314,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     @Override
     public void onHaveRequest(String message) {
         int r = showConfirm(message);
+        if (r == JOptionPane.YES_OPTION) {
+            TimeMatch time = new TimeMatch();
+            GamePlayFrm gamePlayFrm = new GamePlayFrm();
+            time.play(gamePlayFrm);
+            this.dispose();
+        }
     }
 }

@@ -15,14 +15,14 @@ public class TimeMatch implements Runnable {
 
     private GamePlayFrm gamePlayFrm;
 
-    public static void main(String[] args) {
-        GamePlayFrm gamePlayFrm = new GamePlayFrm();
-        new Runnable() {
-            @Override
-            public void run() {
-                gamePlayFrm.setVisible(true);
-            }
-        }.run();
+    public void play(GamePlayFrm gamePlayFrm) {
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//                gamePlayFrm.setVisible(true);
+//            }
+//        }.run();
+        gamePlayFrm.setVisible(true);
         Thread time = new Thread(new TimeMatch(gamePlayFrm));
         time.start();
     }

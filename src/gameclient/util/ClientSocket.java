@@ -39,15 +39,15 @@ public class ClientSocket {
 
     @OnOpen
     public void handleOpen(Session session) {
+//        sendMessage(String.valueOf(UserInfo.getInstance().getId()));
         System.out.println("Connected to Server!");
     }
 
     @OnMessage
     public void handleMessage(String message) {
-        String response = message;
-        System.err.println(response);
-        if (response.equals("have match")) {
-            this.onHaveMessageListener.onHaveRequest(response);
+        System.err.println(message);
+        if (message.equals("have match")) {
+            this.onHaveMessageListener.onHaveRequest(message);
         }
     }
 
