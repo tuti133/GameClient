@@ -215,6 +215,10 @@ public class GamePlayFrm extends javax.swing.JFrame {
         new DashBoardFrm().setVisible(true);
     }//GEN-LAST:event_btnQuitActionPerformed
 
+    public void setLbTimeLeft(String text) {
+        lbTimeLeft.setText(text);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -240,4 +244,5 @@ public class GamePlayFrm extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbAns3;
     private javax.swing.JRadioButton rbAns4;
     // End of variables declaration//GEN-END:variables
+
 }
