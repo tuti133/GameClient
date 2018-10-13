@@ -19,4 +19,5 @@ public interface Constant {
     String BUSY_STATUS = "3";
 
     int TIME_PLAY = 180;
+    int RANDOM_QUESTION_NUMBER = 5;
 }
