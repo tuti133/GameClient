@@ -52,7 +52,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         }
 
         lbNickname.setText(String.format("Nickname: %s", UserInfo.getInstance().getNickName()));
-        lbScore.setText(String.format("Score: %d", UserInfo.getInstance().getScore()));
+        lbScore.setText(String.format("Score: %.1f", UserInfo.getInstance().getScore()));
 
         //hidden column id
         TableColumnModel tcm = tblHome.getColumnModel();
