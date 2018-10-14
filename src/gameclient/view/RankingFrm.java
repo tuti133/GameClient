@@ -14,16 +14,16 @@ import javax.swing.JTable;
 
 import gameclient.controller.RankingController;
 import net.miginfocom.swing.MigLayout;
+import java.awt.Font;
 
 public class RankingFrm extends JFrame {
 
 	private static final long serialVersionUID = 2871331266445445320L;
 	private JPanel panel;
-	private JLabel lblYourRank;
+	private JLabel lblHallOfFame;
 	private JTable table;
 	private JButton btnRefresh;
 	private JScrollPane scrollPane;
-	private JLabel lblRank;
 
 	private RankingController rankCtrl = new RankingController();
 
@@ -37,8 +37,9 @@ public class RankingFrm extends JFrame {
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new MigLayout("", "[grow][]", "[][grow]"));
 
-		lblYourRank = new JLabel("Your Rank:");
-		panel.add(lblYourRank, "flowx,cell 0 0,alignx left,aligny center");
+		lblHallOfFame = new JLabel("Hall Of Fame");
+		lblHallOfFame.setFont(new Font("Tahoma", Font.BOLD, 11));
+		panel.add(lblHallOfFame, "flowx,cell 0 0,alignx left,aligny center");
 
 		btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new ActionListener() {
@@ -51,12 +52,9 @@ public class RankingFrm extends JFrame {
 		scrollPane = new JScrollPane();
 		table = new JTable();
 		table.setModel(rankCtrl);
+		table.getTableHeader().setReorderingAllowed(false);
 		scrollPane.setViewportView(table);
 		panel.add(scrollPane, "cell 0 1 2 1,grow");
-
-		lblRank = new JLabel();
-		lblRank.setText(rankCtrl.getRank());
-		panel.add(lblRank, "cell 0 0,alignx left,aligny center");
 
 		setVisible(true);
 	}

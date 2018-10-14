@@ -10,42 +10,44 @@ package gameclient.util;
  * @author Admin
  */
 public class UserInfo {
-    private int id;
-    private String nickName;
-    private int score;
-    private UserInfo(){
-    }
-    private static UserInfo instance;
-    public static UserInfo getInstance(){
-        if(instance == null){
-            instance = new UserInfo();
-        }
-        return instance;
-    }
+	private int id;
+	private String nickName;
+	private double score;
 
-    public String getNickName() {
-        return nickName;
-    }
+	private UserInfo() {
+	}
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
+	private static UserInfo instance;
 
-    public int getScore() {
-        return score;
-    }
+	public static UserInfo getInstance() {
+		if (instance == null) {
+			instance = new UserInfo();
+		}
+		return instance;
+	}
 
-    public void setScore(int score) {
-        this.score = score;
-    }
+	public String getNickName() {
+		return nickName;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
-    
-    
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }

@@ -20,7 +20,7 @@ public class User implements ToObject {
     private String nickName;
     private String password;
     private String status;
-    private int score;
+    private double score;
 
     public User() {
     }
@@ -65,11 +65,11 @@ public class User implements ToObject {
         this.status = status;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
