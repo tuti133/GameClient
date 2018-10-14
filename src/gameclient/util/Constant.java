@@ -20,4 +20,8 @@ public interface Constant {
 
     int TIME_PLAY = 180;
     int RANDOM_QUESTION_NUMBER = 5;
+    
+    int LOST = 0;
+    int DROW = 1;
+    int WIN = 2;
 }
