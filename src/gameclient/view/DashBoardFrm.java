@@ -34,6 +34,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private final String AVAILABLE = "Available";
     private final String BUSY = "Busy";
     private ClientSocket client = null;
+    private final int userId = UserInfo.getInstance().getId();
 
     /**
      * Creates new form DashBoardFrm
@@ -44,7 +45,8 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             //send first message to server for register id
             client = new ClientSocket();
             client.setOnHaveMessageListener(this);
-            client.sendMessage(String.valueOf(UserInfo.getInstance().getId()));
+//            client.sendMessage(String.valueOf(UserInfo.getInstance().getId()));
+            client.sendMessage(String.valueOf(userId));
         } catch (Exception ex) {
             Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -75,7 +77,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                     int r = showConfirm(String.format("Bạn muốn thách đấu với %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {
-                        client.sendMessage(String.valueOf(id));
+                        client.sendMessage(userId + Constant.SEND_ATTACK_MSG + String.valueOf(id));
                         showMessage("OK");
                     }
                 }
@@ -311,14 +313,28 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private javax.swing.JTable tblHome;
     // End of variables declaration//GEN-END:variables
 
+//    @Override
+//    public void onHaveRequest(String message) {
+//        int r = showConfirm(message);
+//        if (r == JOptionPane.YES_OPTION) {
+//            TimeMatch time = new TimeMatch();
+//            GamePlayFrm gamePlayFrm = new GamePlayFrm();
+//            time.play(gamePlayFrm);
+//            this.dispose();
+//        }
+//    }
     @Override
-    public void onHaveRequest(String message) {
-        int r = showConfirm(message);
+    public void sendAcceptMessage(String message, ClientSocket clientSocket) {
+        String[] messageSplit = message.split("/");
+        int r = showConfirm(messageSplit[1]);
         if (r == JOptionPane.YES_OPTION) {
-            TimeMatch time = new TimeMatch();
-            GamePlayFrm gamePlayFrm = new GamePlayFrm();
-            time.play(gamePlayFrm);
-            this.dispose();
+            clientSocket.sendMessage(messageSplit[2] + "/" + Constant.ACCEPT_MSG + "/" + messageSplit[0]);
+
+//            TimeMatch time = new TimeMatch();
+//            GamePlayFrm gamePlayFrm = new GamePlayFrm();
+//            time.play(gamePlayFrm);
+//            this.dispose();
         }
+
     }
 }

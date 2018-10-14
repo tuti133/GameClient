@@ -46,8 +46,9 @@ public class ClientSocket {
     @OnMessage
     public void handleMessage(String message) {
         System.err.println(message);
-        if (message.equals("have match")) {
-            this.onHaveMessageListener.onHaveRequest(message);
+        if (message.contains(Constant.ATTACK_REQUEST_MSG)) {
+//            this.onHaveMessageListener.onHaveRequest(message);
+            this.onHaveMessageListener.sendAcceptMessage(message, this);
         }
     }
 

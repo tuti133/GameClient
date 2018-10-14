@@ -5,10 +5,15 @@
  */
 package gameclient.listener;
 
+import gameclient.util.ClientSocket;
+
 /**
  *
  * @author Admin
  */
 public interface OnHaveMessageListener {
-    void onHaveRequest(String message);
+
+//    void onHaveRequest(String message);
+
+    void sendAcceptMessage(String message, ClientSocket clientSocket);
 }
