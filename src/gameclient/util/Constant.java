@@ -22,7 +22,7 @@ public interface Constant {
     int RANDOM_QUESTION_NUMBER = 5;
     
     int LOST = 0;
-    int DROW = 1;
+    int DRAW = 1;
     int WIN = 2;
 
     String SEND_ATTACK_MSG = " You want play with ";
