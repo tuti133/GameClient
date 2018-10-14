@@ -5,6 +5,7 @@
  */
 package gameclient.util;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ public class ClientSocket {
 
     private OnHaveMessageListener onHaveMessageListener;
     private Session session = null;
+    private Gson gson = new Gson();
 
     public ClientSocket() throws Exception {
         URI uri = new URI("ws://localhost:8080/game");
@@ -39,17 +41,20 @@ public class ClientSocket {
 
     @OnOpen
     public void handleOpen(Session session) {
-//        sendMessage(String.valueOf(UserInfo.getInstance().getId()));
         System.out.println("Connected to Server!");
     }
 
     @OnMessage
     public void handleMessage(String message) {
         System.err.println(message);
-        if (message.contains(Constant.ATTACK_REQUEST_MSG)) {
-//            this.onHaveMessageListener.onHaveRequest(message);
-            this.onHaveMessageListener.sendAcceptMessage(message, this);
+        try {
+            SocketMessageDto response = gson.fromJson(message, SocketMessageDto.class);
+            onHaveMessageListener.onHaveMessage(response);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println(message);
         }
+
     }
 
     @OnClose
@@ -65,6 +70,29 @@ public class ClientSocket {
     public void sendMessage(String message) {
         try {
             this.session.getBasicRemote().sendText(message);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void sendChallengeRequest(int userId) {
+        try {
+            SocketMessageDto dto = new SocketMessageDto();
+            dto.setType(Constant.CHALLENGE_REQUEST);
+            dto.setId(userId);
+            this.session.getBasicRemote().sendText(gson.toJson(dto));
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void sendChallengeResponse(int userId, String msg) {
+        try {
+            SocketMessageDto dto = new SocketMessageDto();
+            dto.setType(Constant.CHALLENGE_RESPONSE);
+            dto.setId(userId);
+            dto.setMsg(msg);
+            this.session.getBasicRemote().sendText(gson.toJson(dto));
         } catch (IOException ex) {
             Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
         }

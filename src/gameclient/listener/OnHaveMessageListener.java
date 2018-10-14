@@ -6,6 +6,7 @@
 package gameclient.listener;
 
 import gameclient.util.ClientSocket;
+import gameclient.util.SocketMessageDto;
 
 /**
  *
@@ -13,7 +14,7 @@ import gameclient.util.ClientSocket;
  */
 public interface OnHaveMessageListener {
 
-//    void onHaveRequest(String message);
+    void onHaveMessage(SocketMessageDto message);
 
     void sendAcceptMessage(String message, ClientSocket clientSocket);
 }

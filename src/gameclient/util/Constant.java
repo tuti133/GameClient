@@ -20,7 +20,7 @@ public interface Constant {
 
     int TIME_PLAY = 180;
     int RANDOM_QUESTION_NUMBER = 5;
-    
+
     int LOST = 0;
     int DRAW = 1;
     int WIN = 2;
@@ -28,4 +28,9 @@ public interface Constant {
     String SEND_ATTACK_MSG = " You want play with ";
     String ATTACK_REQUEST_MSG = " Play with you? ";
     String ACCEPT_MSG = " Accept this game ";
+
+    String CHALLENGE_REQUEST = "CHALLENGE_REQUEST";
+    String CHALLENGE_RESPONSE = "CHALLENGE_RESPONSE";
+    String REJECT = "REJECT";
+    String ACCEPT = "ACCEPT";
 }

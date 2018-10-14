@@ -5,6 +5,7 @@
  */
 package gameclient.view;
 
+import com.google.gson.Gson;
 import gameclient.controller.UserController;
 import gameclient.model.User;
 import gameclient.model.response.GetOnlineUserResponseDto;
@@ -22,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import gameclient.listener.OnHaveMessageListener;
+import gameclient.util.SocketMessageDto;
 import gameclient.util.TimeMatch;
 
 /**
@@ -35,7 +37,8 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private final String BUSY = "Busy";
     private ClientSocket client = null;
     private final int userId = UserInfo.getInstance().getId();
-
+    private final String nickName = UserInfo.getInstance().getNickName();
+    private final Gson gson = new Gson();
     /**
      * Creates new form DashBoardFrm
      */
@@ -45,8 +48,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             //send first message to server for register id
             client = new ClientSocket();
             client.setOnHaveMessageListener(this);
-//            client.sendMessage(String.valueOf(UserInfo.getInstance().getId()));
-            client.sendMessage(String.valueOf(userId));
+            client.sendMessage(String.format("%d,%s", userId, nickName));
         } catch (Exception ex) {
             Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,8 +79,8 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                     int r = showConfirm(String.format("Bạn muốn thách đấu với %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {
-                        client.sendMessage(userId + Constant.SEND_ATTACK_MSG + String.valueOf(id));
-                        showMessage("OK");
+                        client.sendChallengeRequest(id);
+                        showMessage("Đã gửi lời thách đấu đang đợi phản hồi lại!");
                     }
                 }
             }
@@ -336,5 +338,33 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
 //            this.dispose();
         }
 
+    }
+
+    @Override
+    public void onHaveMessage(SocketMessageDto message) {
+        
+        //có lời thách đấu tới
+        if(message.getType().equals(Constant.CHALLENGE_REQUEST)){
+            int res = showConfirm(String.format("Người chơi %s muốn thách đấu vói "
+                    + "bạn bạn muốn chiến ko?", message.getNickName()));
+            if(res == JOptionPane.NO_OPTION){
+                client.sendChallengeResponse(message.getId(), Constant.REJECT);
+                
+            }
+            else if(res == JOptionPane.YES_OPTION){
+                client.sendChallengeResponse(message.getId(), Constant.ACCEPT);
+            }
+        }
+        //tin nhắn trả lời lời thách đấu
+        else if(message.getType().equals(Constant.CHALLENGE_RESPONSE)){
+            //từ chối lời thách đấu
+            if(message.getMsg().equals(Constant.REJECT)){
+                showMessage(String.format("Người chơi %s đã từ chối lời thách đấu của bạn", message.getNickName()));
+            }
+            else if(message.getMsg().equals(Constant.ACCEPT)){
+                
+            }
+        }
+        
     }
 }
