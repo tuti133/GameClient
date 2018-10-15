@@ -5,15 +5,12 @@
  */
 package gameclient.listener;
 
-import gameclient.util.ClientSocket;
 import gameclient.util.SocketMessageDto;
 
 /**
  *
  * @author Admin
  */
-public interface OnHaveMessageListener {
-
-    void onHaveMessage(SocketMessageDto message);
-
+public interface OnResultListener {
+    void onResultListener(SocketMessageDto messageDto);
 }

@@ -17,6 +17,7 @@ import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import gameclient.listener.OnHaveMessageListener;
+import gameclient.listener.OnResultListener;
 import javax.websocket.OnOpen;
 
 /**
@@ -27,6 +28,7 @@ import javax.websocket.OnOpen;
 public class ClientSocket {
 
     private OnHaveMessageListener onHaveMessageListener;
+    private OnResultListener onResultListener;
     private Session session = null;
     private Gson gson = new Gson();
 
@@ -39,6 +41,10 @@ public class ClientSocket {
         this.onHaveMessageListener = onHaveMessageListener;
     }
 
+    public void setOnResultListener(OnResultListener onResultListener) {
+        this.onResultListener = onResultListener;
+    }
+
     @OnOpen
     public void handleOpen(Session session) {
         System.out.println("Connected to Server!");
@@ -49,10 +55,13 @@ public class ClientSocket {
         System.err.println(message);
         try {
             SocketMessageDto response = gson.fromJson(message, SocketMessageDto.class);
-            onHaveMessageListener.onHaveMessage(response);
+            if (response.getType().equals(Constant.RESULT_RESPONSE)) {
+                onResultListener.onResultListener(response);
+            } else {
+                onHaveMessageListener.onHaveMessage(response);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.err.println(message);
         }
 
     }

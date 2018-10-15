@@ -5,17 +5,83 @@
  */
 package gameclient.view;
 
+import gameclient.controller.UserMatchController;
+import gameclient.listener.OnResultListener;
+import gameclient.model.Question;
+import gameclient.model.UserMatches;
+import gameclient.util.ClientSocket;
+import gameclient.util.Constant;
+import gameclient.util.SocketMessageDto;
+import gameclient.util.TimeMatch;
+import gameclient.util.UserInfo;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Nobody
  */
-public class GamePlayFrm extends javax.swing.JFrame {
+public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener {
 
+    private List<Question> listQuestions;
+    private int currentQuestionNumber = 0;
+    private int correctAnswer = 0;
+    private String selectedAnswer;
+    private int matchId;
+    private final int userId = UserInfo.getInstance().getId();
+    private UserMatchController userMatchController = new UserMatchController();
+    private ClientSocket client;
     /**
-     * Creates new form GameScreenFrm
+     * Creates new form DemoQuestion
      */
+
+    private TimeMatch timeMatch;
+
     public GamePlayFrm() {
+    }
+
+    public void setLbTimeLeft(String text) {
+        this.lbTimeLeft.setText(text);
+    }
+
+    public GamePlayFrm(List<Question> listQuestions, int matchId, ClientSocket client) {
         initComponents();
+        this.matchId = matchId;
+        this.client = client;
+        this.client.setOnResultListener(this);
+        timeMatch = new TimeMatch(this);
+        this.listQuestions = listQuestions;
+        if (listQuestions.isEmpty()) {
+            showMessage("Chua co cau hoi trong CSDL");
+        } else {
+            setDisplayQuestion(listQuestions.get(currentQuestionNumber));
+        }
+    }
+
+    private void setDisplayQuestion(Question question) {
+        this.lbQuestionContent.setText(question.getContent());
+        this.rbAns1.setText(question.getAnswer1());
+        this.rbAns2.setText(question.getAnswer2());
+        this.rbAns3.setText(question.getAnswer3());
+        this.rbAns4.setText(question.getAnswer4());
+        this.lbCurrentQuestion.setText(String.valueOf(currentQuestionNumber + 1));
+        this.lbTotalQuestion.setText(String.valueOf(Constant.RANDOM_QUESTION_NUMBER));
+        this.selectedAnswer = "";
+        this.buttonGroup1.clearSelection();
+    }
+
+    private boolean checkAnswer(String answer, Question question) {
+        if (answer.equals(question.getKey())) {
+            return true;
+        }
+        return false;
+    }
+
+    private void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
     }
 
     /**
@@ -27,7 +93,7 @@ public class GamePlayFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         btnQuit = new javax.swing.JButton();
         btnSubmit = new javax.swing.JButton();
@@ -48,7 +114,6 @@ public class GamePlayFrm extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setLocation(new java.awt.Point(300, 300));
 
         btnQuit.setText("Quit");
         btnQuit.addActionListener(new java.awt.event.ActionListener() {
@@ -58,6 +123,7 @@ public class GamePlayFrm extends javax.swing.JFrame {
         });
 
         btnSubmit.setText("Submit");
+        btnSubmit.setEnabled(false);
         btnSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSubmitActionPerformed(evt);
@@ -77,9 +143,10 @@ public class GamePlayFrm extends javax.swing.JFrame {
         lbTimeLeft.setText("02:30");
 
         lbQuestionContent.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lbQuestionContent.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbQuestionContent.setText("Question content here...");
 
-        buttonGroup2.add(rbAns1);
+        buttonGroup1.add(rbAns1);
         rbAns1.setText("Ans 1");
         rbAns1.setName(""); // NOI18N
         rbAns1.addActionListener(new java.awt.event.ActionListener() {
@@ -88,49 +155,41 @@ public class GamePlayFrm extends javax.swing.JFrame {
             }
         });
 
-        buttonGroup2.add(rbAns2);
+        buttonGroup1.add(rbAns2);
         rbAns2.setText("Ans 2");
+        rbAns2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbAns2ActionPerformed(evt);
+            }
+        });
 
-        buttonGroup2.add(rbAns3);
+        buttonGroup1.add(rbAns3);
         rbAns3.setText("Ans 3");
+        rbAns3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbAns3ActionPerformed(evt);
+            }
+        });
 
-        buttonGroup2.add(rbAns4);
+        buttonGroup1.add(rbAns4);
         rbAns4.setText("Ans 4");
+        rbAns4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbAns4ActionPerformed(evt);
+            }
+        });
 
         btnNext.setText("Next");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addComponent(rbAns3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbCurrentQuestion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbTotalQuestion))
-                    .addComponent(rbAns1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(87, 87, 87)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(rbAns4)
-                            .addComponent(rbAns2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(175, 175, 175)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbTimeLeft)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(btnQuit)
@@ -145,10 +204,32 @@ public class GamePlayFrm extends javax.swing.JFrame {
                     .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator2))
                 .addContainerGap())
+            .addComponent(lbQuestionContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(76, 76, 76)
-                .addComponent(lbQuestionContent)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbCurrentQuestion)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lbTotalQuestion)
+                        .addGap(175, 175, 175)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lbTimeLeft))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rbAns1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(rbAns3, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(87, 87, 87)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(rbAns4)
+                            .addComponent(rbAns2))))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,11 +244,11 @@ public class GamePlayFrm extends javax.swing.JFrame {
                     .addComponent(lbTimeLeft))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(lbQuestionContent)
-                .addGap(47, 47, 47)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbQuestionContent, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(1, 1, 1)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbAns1)
                     .addComponent(rbAns2))
@@ -175,7 +256,7 @@ public class GamePlayFrm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbAns3)
                     .addComponent(rbAns4))
-                .addGap(8, 8, 8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -199,35 +280,79 @@ public class GamePlayFrm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rbAns1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAns1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rbAns1ActionPerformed
-
-    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-        new GameOverFrm().setVisible(true);
-    }//GEN-LAST:event_btnSubmitActionPerformed
-
     private void btnQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitActionPerformed
         // TODO add your handling code here:
         this.dispose();
         new DashBoardFrm().setVisible(true);
     }//GEN-LAST:event_btnQuitActionPerformed
 
-    public void setLbTimeLeft(String text) {
-        lbTimeLeft.setText(text);
-    }
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        try {
+            // TODO add your handling code here:
+            btnSubmit.setEnabled(false);
+            if (checkAnswer(selectedAnswer, listQuestions.get(currentQuestionNumber))) {
+                this.correctAnswer++;
+            }
 
-    /**
-     * @param args the command line arguments
-     */
+            timeMatch.stop();
+            int time = Constant.TIME_PLAY - timeMatch.getTime();
+            UserMatches userMatches = new UserMatches();
+            userMatches.setMatchId(matchId);
+            userMatches.setTime(time);
+            userMatches.setCorrectAnswers(correctAnswer);
+            userMatches.setUserId(userId);
+            userMatchController.create(userMatches);
+
+//        this.dispose();
+//        new GameOverFrm().setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(GamePlayFrm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void rbAns1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAns1ActionPerformed
+        // TODO add your handling code here:
+        this.selectedAnswer = this.rbAns1.getText();
+    }//GEN-LAST:event_rbAns1ActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        // TODO add your handling code here:
+        if (this.selectedAnswer.isEmpty()) {
+            showMessage("Ban phai chon 1 dap an");
+            return;
+        }
+        if (currentQuestionNumber == Constant.RANDOM_QUESTION_NUMBER - 2) {
+            this.btnNext.setEnabled(false);
+            this.btnSubmit.setEnabled(true);
+        }
+        if (checkAnswer(selectedAnswer, listQuestions.get(currentQuestionNumber))) {
+            this.correctAnswer++;
+        }
+        currentQuestionNumber++;
+        setDisplayQuestion(listQuestions.get(currentQuestionNumber));
+    }//GEN-LAST:event_btnNextActionPerformed
+
+    private void rbAns2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAns2ActionPerformed
+        // TODO add your handling code here:
+        this.selectedAnswer = this.rbAns2.getText();
+    }//GEN-LAST:event_rbAns2ActionPerformed
+
+    private void rbAns3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAns3ActionPerformed
+        // TODO add your handling code here:
+        this.selectedAnswer = this.rbAns3.getText();
+    }//GEN-LAST:event_rbAns3ActionPerformed
+
+    private void rbAns4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAns4ActionPerformed
+        // TODO add your handling code here:
+        this.selectedAnswer = this.rbAns4.getText();
+    }//GEN-LAST:event_rbAns4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnQuit;
     private javax.swing.JButton btnSubmit;
-    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -245,4 +370,18 @@ public class GamePlayFrm extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbAns4;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void onResultListener(SocketMessageDto messageDto) {
+        switch (Integer.parseInt(messageDto.getMsg())) {
+            case Constant.WIN:
+                showMessage(String.format("Your correct answer: %d\nYou win!", messageDto.getCorrectAnswer()));
+                break;
+            case Constant.LOST:
+                showMessage(String.format("Your correct answer: %d\nYou lose!", messageDto.getCorrectAnswer()));
+                break;
+            default:
+                showMessage(String.format("Your correct answer: %d\nMatch draw!", messageDto.getCorrectAnswer()));
+                break;
+        }
+    }
 }

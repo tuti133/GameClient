@@ -5,7 +5,9 @@
  */
 package gameclient.util;
 
+import gameclient.model.Question;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -19,7 +21,36 @@ public class SocketMessageDto implements Serializable {
     private String msg;
     private int id;
     private String nickName;
+    private int matchId;
+    private int correctAnswer;
+ 
+    private List<Question> questionList;
 
+    public List<Question> getQuestionList() {
+        return questionList;
+    }
+
+    public int getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(int correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
+
+    
+    public void setQuestionList(List<Question> questionList) {
+        this.questionList = questionList;
+    }
+
+    public int getMatchId() {
+        return matchId;
+    }
+
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
+    
     public SocketMessageDto() {
     }
 

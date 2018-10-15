@@ -25,10 +25,8 @@ public interface Constant {
     int DRAW = 1;
     int WIN = 2;
 
-    String SEND_ATTACK_MSG = " You want play with ";
-    String ATTACK_REQUEST_MSG = " Play with you? ";
-    String ACCEPT_MSG = " Accept this game ";
 
+    String RESULT_RESPONSE = "RESULT_RESPONSE";
     String CHALLENGE_REQUEST = "CHALLENGE_REQUEST";
     String CHALLENGE_RESPONSE = "CHALLENGE_RESPONSE";
     String REJECT = "REJECT";

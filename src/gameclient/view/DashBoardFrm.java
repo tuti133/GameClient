@@ -25,6 +25,7 @@ import javax.swing.table.TableColumnModel;
 import gameclient.listener.OnHaveMessageListener;
 import gameclient.util.SocketMessageDto;
 import gameclient.util.TimeMatch;
+import java.sql.Time;
 
 /**
  *
@@ -315,31 +316,6 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private javax.swing.JTable tblHome;
     // End of variables declaration//GEN-END:variables
 
-//    @Override
-//    public void onHaveRequest(String message) {
-//        int r = showConfirm(message);
-//        if (r == JOptionPane.YES_OPTION) {
-//            TimeMatch time = new TimeMatch();
-//            GamePlayFrm gamePlayFrm = new GamePlayFrm();
-//            time.play(gamePlayFrm);
-//            this.dispose();
-//        }
-//    }
-    @Override
-    public void sendAcceptMessage(String message, ClientSocket clientSocket) {
-        String[] messageSplit = message.split("/");
-        int r = showConfirm(messageSplit[1]);
-        if (r == JOptionPane.YES_OPTION) {
-            clientSocket.sendMessage(messageSplit[2] + "/" + Constant.ACCEPT_MSG + "/" + messageSplit[0]);
-
-//            TimeMatch time = new TimeMatch();
-//            GamePlayFrm gamePlayFrm = new GamePlayFrm();
-//            time.play(gamePlayFrm);
-//            this.dispose();
-        }
-
-    }
-
     @Override
     public void onHaveMessage(SocketMessageDto message) {
         
@@ -362,9 +338,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                 showMessage(String.format("Người chơi %s đã từ chối lời thách đấu của bạn", message.getNickName()));
             }
             else if(message.getMsg().equals(Constant.ACCEPT)){
-                
+                this.dispose();
+                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), client);
             }
         }
         
     }
+
 }

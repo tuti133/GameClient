@@ -14,21 +14,21 @@ import gameclient.view.GamePlayFrm;
 public class TimeMatch implements Runnable {
 
     private GamePlayFrm gamePlayFrm;
-
-    public void play(GamePlayFrm gamePlayFrm) {
-//        new Runnable() {
-//            @Override
-//            public void run() {
-//                gamePlayFrm.setVisible(true);
-//            }
-//        }.run();
+    private int time = Constant.TIME_PLAY;
+    private boolean isRunning = true;
+    public int getTime() {
+        return time;
+    }
+    
+    public void play() {
         gamePlayFrm.setVisible(true);
-        Thread time = new Thread(new TimeMatch(gamePlayFrm));
+        Thread time = new Thread(this);
         time.start();
     }
 
     public TimeMatch(GamePlayFrm gamePlayFrm) {
         this.gamePlayFrm = gamePlayFrm;
+        play();
     }
 
     public TimeMatch() {
@@ -38,10 +38,13 @@ public class TimeMatch implements Runnable {
     public void run() {
         runTime();
     }
-
+    
+    public void stop(){
+        isRunning = false;
+    }
     public void runTime() {
-        int time = Constant.TIME_PLAY;
-        while (time > 0) {
+        
+        while (time > 0 && isRunning) {
             time--;
             gamePlayFrm.setLbTimeLeft(showTime(time));
             try {
