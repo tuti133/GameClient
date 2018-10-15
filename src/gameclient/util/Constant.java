@@ -21,7 +21,7 @@ public interface Constant {
     int TIME_PLAY = 180;
     int RANDOM_QUESTION_NUMBER = 5;
 
-    int LOST = 0;
+    int LOSE = 0;
     int DRAW = 1;
     int WIN = 2;
 

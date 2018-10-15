@@ -78,6 +78,10 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                     if (id == UserInfo.getInstance().getId()) {
                         return;
                     }
+                    if (model.getValueAt(table.getSelectedRow(), 3).equals(BUSY)){
+                        showMessage("User is busy!");
+                        return;
+                    }
                     int r = showConfirm(String.format("Challenge user %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {

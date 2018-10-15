@@ -30,8 +30,8 @@ public class RankingFrm extends JFrame {
 	public RankingFrm() {
 		setTitle("Hall of Fame");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
 		setMinimumSize(new Dimension(500, 300));
+		this.setLocationRelativeTo(null);
 
 		panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);

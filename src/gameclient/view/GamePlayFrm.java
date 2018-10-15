@@ -377,7 +377,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
             case Constant.WIN:
                 showMessage(String.format("Your correct answer: %d\nYou win!", messageDto.getCorrectAnswer()));
                 break;
-            case Constant.LOST:
+            case Constant.LOSE:
                 showMessage(String.format("Your correct answer: %d\nYou lose!", messageDto.getCorrectAnswer()));
                 break;
             default:
