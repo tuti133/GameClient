@@ -40,11 +40,13 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private final int userId = UserInfo.getInstance().getId();
     private final String nickName = UserInfo.getInstance().getNickName();
     private final Gson gson = new Gson();
+
     /**
      * Creates new form DashBoardFrm
      */
     public DashBoardFrm() {
         initComponents();
+        this.setLocationRelativeTo(null);
         try {
             //send first message to server for register id
             client = new ClientSocket();
@@ -54,13 +56,12 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        lbNickname.setText(String.format("Nickname: %s", UserInfo.getInstance().getNickName()));
-        lbScore.setText(String.format("Score: %.1f", UserInfo.getInstance().getScore()));
+        lbNickname.setText(String.format("Welcome %s!", UserInfo.getInstance().getNickName()));
+        lbScore.setText(String.format("Your score: %.1f", UserInfo.getInstance().getScore()));
 
         //hidden column id
         TableColumnModel tcm = tblHome.getColumnModel();
         tcm.removeColumn(tcm.getColumn(0));
-
         setupData();
         addEventHandle();
     }
@@ -77,11 +78,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                     if (id == UserInfo.getInstance().getId()) {
                         return;
                     }
-                    int r = showConfirm(String.format("Bạn muốn thách đấu với %s?",
+                    int r = showConfirm(String.format("Challenge user %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {
                         client.sendChallengeRequest(id);
-                        showMessage("Đã gửi lời thách đấu đang đợi phản hồi lại!");
+                        showMessage("Challenge request sent!");
                     }
                 }
             }
@@ -152,7 +153,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         cbStatus = new javax.swing.JComboBox<>();
         btnLogout = new javax.swing.JButton();
         btnRanking = new javax.swing.JButton();
-        btnSoloRandom = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home");
@@ -177,11 +178,14 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                 return canEdit [columnIndex];
             }
         });
+        tblHome.setRowHeight(25);
+        tblHome.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblHome);
         if (tblHome.getColumnModel().getColumnCount() > 0) {
             tblHome.getColumnModel().getColumn(0).setResizable(false);
         }
 
+        lbNickname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbNickname.setText("Nickname");
 
         lbScore.setText("Score");
@@ -212,10 +216,10 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             }
         });
 
-        btnSoloRandom.setText("Solo Random");
-        btnSoloRandom.addActionListener(new java.awt.event.ActionListener() {
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSoloRandomActionPerformed(evt);
+                btnRefreshActionPerformed(evt);
             }
         });
 
@@ -228,40 +232,37 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(112, 112, 112)
-                        .addComponent(lbNickname)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
+                        .addComponent(lbNickname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
                         .addComponent(lbScore))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnLogout)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSoloRandom)
-                        .addGap(60, 60, 60)
+                        .addComponent(btnRefresh)
+                        .addGap(89, 89, 89)
                         .addComponent(btnRanking)))
-                .addGap(35, 35, 35))
+                .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lbScore)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbNickname)
+                    .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbScore))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btnLogout)
-                    .addComponent(btnRanking)
-                    .addComponent(btnSoloRandom))
+                    .addComponent(btnRefresh)
+                    .addComponent(btnRanking))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbNickname))
-                .addGap(274, 274, 274))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -285,15 +286,12 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
-        this.dispose();
-        new LoginFrm().setVisible(true);
+        int r = showConfirm("Are you sure you want to logout?");
+        if (r == JOptionPane.YES_OPTION) {
+            this.dispose();
+            new LoginFrm().setVisible(true);
+        }
     }//GEN-LAST:event_btnLogoutActionPerformed
-
-    private void btnSoloRandomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSoloRandomActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-        new GamePlayFrm().setVisible(true);
-    }//GEN-LAST:event_btnSoloRandomActionPerformed
 
     private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
         // TODO add your handling code here:
@@ -303,11 +301,15 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         setupData();
     }//GEN-LAST:event_cbStatusItemStateChanged
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        setupData();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRanking;
-    private javax.swing.JButton btnSoloRandom;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -318,31 +320,28 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
 
     @Override
     public void onHaveMessage(SocketMessageDto message) {
-        
+
         //có lời thách đấu tới
-        if(message.getType().equals(Constant.CHALLENGE_REQUEST)){
+        if (message.getType().equals(Constant.CHALLENGE_REQUEST)) {
             int res = showConfirm(String.format("Người chơi %s muốn thách đấu vói "
                     + "bạn bạn muốn chiến ko?", message.getNickName()));
-            if(res == JOptionPane.NO_OPTION){
+            if (res == JOptionPane.NO_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.REJECT);
-                
-            }
-            else if(res == JOptionPane.YES_OPTION){
+
+            } else if (res == JOptionPane.YES_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.ACCEPT);
             }
-        }
-        //tin nhắn trả lời lời thách đấu
-        else if(message.getType().equals(Constant.CHALLENGE_RESPONSE)){
+        } //tin nhắn trả lời lời thách đấu
+        else if (message.getType().equals(Constant.CHALLENGE_RESPONSE)) {
             //từ chối lời thách đấu
-            if(message.getMsg().equals(Constant.REJECT)){
+            if (message.getMsg().equals(Constant.REJECT)) {
                 showMessage(String.format("Người chơi %s đã từ chối lời thách đấu của bạn", message.getNickName()));
-            }
-            else if(message.getMsg().equals(Constant.ACCEPT)){
+            } else if (message.getMsg().equals(Constant.ACCEPT)) {
                 this.dispose();
                 new GamePlayFrm(message.getQuestionList(), message.getMatchId(), client);
             }
         }
-        
+
     }
 
 }

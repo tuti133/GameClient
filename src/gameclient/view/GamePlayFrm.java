@@ -49,6 +49,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
 
     public GamePlayFrm(List<Question> listQuestions, int matchId, ClientSocket client) {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.matchId = matchId;
         this.client = client;
         this.client.setOnResultListener(this);

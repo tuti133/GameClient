@@ -7,13 +7,14 @@ package gameclient.model;
 
 import gameclient.util.Constant;
 import gameclient.util.ToObject;
+import java.io.Serializable;
 import javax.swing.JButton;
 
 /**
  *
  * @author Admin
  */
-public class User implements ToObject {
+public class User implements ToObject, Serializable {
 
     private int id;
     private String username;
@@ -25,6 +26,11 @@ public class User implements ToObject {
     public User() {
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    
     public int getId() {
         return id;
     }
@@ -78,5 +84,12 @@ public class User implements ToObject {
         String status = this.status.equals(Constant.AVAILABLE_STATUS) ? "Available" : "Busy";
         return new Object[]{id, nickName, score, status};
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", username=" + username + ", nickName=" + nickName + ", password=" + password + ", status=" + status + ", score=" + score + '}';
+    }
+    
+    
 
 }

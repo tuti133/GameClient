@@ -16,6 +16,7 @@ public class GameOverFrm extends javax.swing.JFrame {
      */
     public GameOverFrm() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -116,7 +117,6 @@ public class GameOverFrm extends javax.swing.JFrame {
 
     private void btnAnswersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnswersActionPerformed
         // TODO add your handling code here:
-        new AnswerFrm().setVisible(true);
     }//GEN-LAST:event_btnAnswersActionPerformed
 
     private void btnPlayAgainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayAgainActionPerformed

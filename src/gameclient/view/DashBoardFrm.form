@@ -47,20 +47,20 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="cbStatus" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
-                          <Component id="lbNickname" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                          <Component id="lbNickname" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="lbScore" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnLogout" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btnSoloRandom" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                          <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
                           <Component id="btnRanking" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="35" pref="35" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jScrollPane1" min="-2" pref="417" max="-2" attributes="0"/>
@@ -70,26 +70,22 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lbScore" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="lbNickname" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbStatus" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbScore" alignment="2" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="205" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnLogout" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnRanking" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnSoloRandom" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="btnLogout" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnRefresh" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnRanking" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-              </Group>
-              <Group type="102" attributes="0">
-                  <EmptySpace min="11" pref="11" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="cbStatus" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbNickname" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="274" pref="274" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -136,8 +132,9 @@
                     </Column>
                   </TableColumnModel>
                 </Property>
+                <Property name="rowHeight" type="int" value="25"/>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                  <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                  <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                 </Property>
               </Properties>
             </Component>
@@ -145,6 +142,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="lbNickname">
           <Properties>
+            <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="Nickname"/>
           </Properties>
         </Component>
@@ -183,12 +181,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRankingActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnSoloRandom">
+        <Component class="javax.swing.JButton" name="btnRefresh">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Solo Random"/>
+            <Property name="text" type="java.lang.String" value="Refresh"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSoloRandomActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRefreshActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

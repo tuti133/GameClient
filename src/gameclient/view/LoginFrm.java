@@ -6,13 +6,19 @@
 package gameclient.view;
 
 import gameclient.controller.LoginController;
+import gameclient.model.User;
 import gameclient.model.request.UserLoginRequestDto;
 import gameclient.model.response.UserLoginResponseDto;
 import gameclient.util.Constant;
 import gameclient.util.UserInfo;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -30,17 +36,21 @@ public class LoginFrm extends javax.swing.JFrame {
      */
     public LoginFrm() {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.getRootPane().setDefaultButton(btnLogin);
+        readRememberedUser();
         btnLogin.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent key) {
-
                 if (key.getKeyChar() == KeyEvent.VK_ENTER) {
                     btnLogin.doClick();
                 }
-
             }
         });
+    }
+
+    private void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
     }
 
     /**
@@ -59,6 +69,7 @@ public class LoginFrm extends javax.swing.JFrame {
         tfPassword = new javax.swing.JPasswordField();
         btnLogin = new javax.swing.JButton();
         btnRegister = new javax.swing.JButton();
+        cbRemember = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("System Login");
@@ -82,31 +93,47 @@ public class LoginFrm extends javax.swing.JFrame {
             }
         });
 
+        cbRemember.setText("Remember");
+        cbRemember.setAlignmentY(0.0F);
+        cbRemember.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        cbRemember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbRememberActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnRegister)
-                    .addComponent(lbUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .addComponent(lbPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLogin))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(17, 17, 17))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfPassword))))
-                .addGap(25, 25, 25))
+                        .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(cbRemember, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tfPassword)
+                            .addComponent(tfUsername, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(20, 20, 20))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbUsername)
                     .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -114,11 +141,13 @@ public class LoginFrm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbPassword)
                     .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbRemember)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRegister)
                     .addComponent(btnLogin))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -127,7 +156,7 @@ public class LoginFrm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,33 +173,79 @@ public class LoginFrm extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String username = tfUsername.getText();
         String password = String.valueOf(tfPassword.getPassword());
-        UserLoginRequestDto userDto = new UserLoginRequestDto(username, password);
-        try {
-            UserLoginResponseDto response = loginController.login(userDto);
-            if (response == null) {
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi");
-                return;
-            }
-            if (response.getErrorCode().equals(Constant.ERROR)) {
 
-                JOptionPane.showMessageDialog(this, response.getMsg());
-                return;
+        if (username.isEmpty() || password.isEmpty()) {
+            showMessage("Username and password can't be empty!");
+        } else {
+            if (cbRemember.isSelected()) {
+                rememberUser(new User(username, password));
+            } else {
+                rememberUser(new User("", ""));
             }
-            UserInfo.getInstance().setNickName(response.getUser().getNickName());
-            UserInfo.getInstance().setScore(response.getUser().getScore());
-            UserInfo.getInstance().setId(response.getUser().getId());
-            this.dispose();
-            DashBoardFrm homeFrm = new DashBoardFrm();
-            homeFrm.setVisible(true);
-        } catch (IOException ex) {
-            Logger.getLogger(LoginFrm.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                UserLoginRequestDto userDto = new UserLoginRequestDto(username, password);
+                UserLoginResponseDto response = loginController.login(userDto);
+                if (response == null) {
+                    showMessage("Something went wrong!");
+                    return;
+                }
+                if (response.getErrorCode().equals(Constant.ERROR)) {
+                    showMessage(response.getMsg());
+                    return;
+                }
+                UserInfo.getInstance().setNickName(response.getUser().getNickName());
+                UserInfo.getInstance().setScore(response.getUser().getScore());
+                UserInfo.getInstance().setId(response.getUser().getId());
+                this.dispose();
+                new DashBoardFrm().setVisible(true);
+            } catch (IOException ex) {
+                showMessage("Can't connect to server!");
+            }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
+    private void cbRememberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRememberActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbRememberActionPerformed
+
+    private void rememberUser(User user) {
+        try {
+            FileOutputStream f = new FileOutputStream("save.dat");
+            try (ObjectOutputStream oStream = new ObjectOutputStream(f)) {
+                oStream.writeObject(user);
+            }
+        } catch (IOException e) {
+            System.out.println("Error Write file");
+        }
+    }
+
+    private void readRememberedUser() {
+        try {
+            File file = new File("save.dat");
+            if (!file.exists()) {
+                file.createNewFile();
+            } else {
+                FileInputStream f = new FileInputStream("save.dat");
+                ObjectInputStream inStream = new ObjectInputStream(f);
+                User user = (User) inStream.readObject();
+                if (!user.getUsername().isEmpty()) {
+                    cbRemember.setSelected(true);
+                    tfUsername.setText(user.getUsername());
+                    tfPassword.setText(user.getPassword());
+                }
+                inStream.close();
+            }
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
+        } catch (IOException e) {
+            System.out.println("Error Read file");
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnRegister;
+    private javax.swing.JCheckBox cbRemember;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lbPassword;
     private javax.swing.JLabel lbUsername;
