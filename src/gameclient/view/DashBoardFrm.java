@@ -40,6 +40,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private final int userId = UserInfo.getInstance().getId();
     private final String nickName = UserInfo.getInstance().getNickName();
     private final Gson gson = new Gson();
+    private int selectedOpponentId;
 
     /**
      * Creates new form DashBoardFrm
@@ -78,14 +79,15 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                     if (id == UserInfo.getInstance().getId()) {
                         return;
                     }
-                    if (model.getValueAt(table.getSelectedRow(), 3).equals(BUSY)){
-                        showMessage("User is busy!");
-                        return;
-                    }
+//                    if (model.getValueAt(table.getSelectedRow(), 3).equals(BUSY)){
+//                        showMessage("User is busy!");
+//                        return;
+//                    }
                     int r = showConfirm(String.format("Challenge user %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {
                         client.sendChallengeRequest(id);
+                        selectedOpponentId = id;
                         showMessage("Challenge request sent!");
                     }
                 }
@@ -334,6 +336,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
 
             } else if (res == JOptionPane.YES_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.ACCEPT);
+                selectedOpponentId = message.getId();
             }
         } //tin nhắn trả lời lời thách đấu
         else if (message.getType().equals(Constant.CHALLENGE_RESPONSE)) {
@@ -342,7 +345,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                 showMessage(String.format("Người chơi %s đã từ chối lời thách đấu của bạn", message.getNickName()));
             } else if (message.getMsg().equals(Constant.ACCEPT)) {
                 this.dispose();
-                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), client);
+                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), selectedOpponentId, client);
             }
         }
 

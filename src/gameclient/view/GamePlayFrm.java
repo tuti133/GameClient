@@ -34,6 +34,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
     private final int userId = UserInfo.getInstance().getId();
     private UserMatchController userMatchController = new UserMatchController();
     private ClientSocket client;
+    private int opponentId;
     /**
      * Creates new form DemoQuestion
      */
@@ -47,13 +48,14 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
         this.lbTimeLeft.setText(text);
     }
 
-    public GamePlayFrm(List<Question> listQuestions, int matchId, ClientSocket client) {
+    public GamePlayFrm(List<Question> listQuestions, int matchId, int opponentId, ClientSocket client) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.matchId = matchId;
+        this.opponentId = opponentId;
         this.client = client;
         this.client.setOnResultListener(this);
-        timeMatch = new TimeMatch(this);
+        this.timeMatch = new TimeMatch(this);
         this.listQuestions = listQuestions;
         if (listQuestions.isEmpty()) {
             showMessage("Chua co cau hoi trong CSDL");
@@ -303,9 +305,6 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
             userMatches.setCorrectAnswers(correctAnswer);
             userMatches.setUserId(userId);
             userMatchController.create(userMatches);
-
-//        this.dispose();
-//        new GameOverFrm().setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(GamePlayFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -319,7 +318,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
         if (this.selectedAnswer.isEmpty()) {
-            showMessage("Ban phai chon 1 dap an");
+            showMessage("You must choose an answer!");
             return;
         }
         if (currentQuestionNumber == Constant.RANDOM_QUESTION_NUMBER - 2) {
@@ -373,15 +372,19 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
 
     @Override
     public void onResultListener(SocketMessageDto messageDto) {
+        this.dispose();
         switch (Integer.parseInt(messageDto.getMsg())) {
             case Constant.WIN:
-                showMessage(String.format("Your correct answer: %d\nYou win!", messageDto.getCorrectAnswer()));
+//                showMessage(String.format("Your correct answer: %d\nYou win!", messageDto.getCorrectAnswer()));
+                new GameOverFrm(this.client, this, "You won!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
                 break;
             case Constant.LOSE:
-                showMessage(String.format("Your correct answer: %d\nYou lose!", messageDto.getCorrectAnswer()));
+//                showMessage(String.format("Your correct answer: %d\nYou lose!", messageDto.getCorrectAnswer()));
+                new GameOverFrm(this.client, this, "You lost!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
                 break;
             default:
-                showMessage(String.format("Your correct answer: %d\nMatch draw!", messageDto.getCorrectAnswer()));
+//                showMessage(String.format("Your correct answer: %d\nMatch draw!", messageDto.getCorrectAnswer()));
+                new GameOverFrm(this.client, this, "Drawn match!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
                 break;
         }
     }
