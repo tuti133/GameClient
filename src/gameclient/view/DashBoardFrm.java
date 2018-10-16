@@ -69,26 +69,22 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
 
     private void addEventHandle() {
         tblHome.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
+                
                 JTable table = (JTable) mouseEvent.getSource();
                 if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
-
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
                     int id = Integer.parseInt(String.valueOf(model.getValueAt(table.getSelectedRow(), 0)));
                     if (id == UserInfo.getInstance().getId()) {
                         return;
                     }
-//                    if (model.getValueAt(table.getSelectedRow(), 3).equals(BUSY)){
-//                        showMessage("User is busy!");
-//                        return;
-//                    }
                     int r = showConfirm(String.format("Challenge user %s?",
                             String.valueOf(model.getValueAt(table.getSelectedRow(), 1))));
                     if (r == JOptionPane.YES_OPTION) {
                         client.sendChallengeRequest(id);
                         selectedOpponentId = id;
-                        showMessage("Challenge request sent!");
                     }
                 }
             }
@@ -164,6 +160,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home");
         setLocation(new java.awt.Point(300, 300));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         tblHome.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -295,6 +296,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         int r = showConfirm("Are you sure you want to logout?");
         if (r == JOptionPane.YES_OPTION) {
             this.dispose();
+            try {
+                this.client.getSession().close();
+            } catch (IOException ex) {
+                Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
+            }
             new LoginFrm().setVisible(true);
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
@@ -310,6 +316,10 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         setupData();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        
+    }//GEN-LAST:event_formWindowClosed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -347,6 +357,9 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                 this.dispose();
                 new GamePlayFrm(message.getQuestionList(), message.getMatchId(), selectedOpponentId, client);
             }
+        } else if (message.getType().equals(Constant.PLAYER_UNAVAILABLE)){
+            showMessage("Player is unavailable!");
+            setupData();
         }
 
     }

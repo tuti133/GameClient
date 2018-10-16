@@ -25,10 +25,13 @@ public interface Constant {
     int DRAW = 1;
     int WIN = 2;
 
-
     String RESULT_RESPONSE = "RESULT_RESPONSE";
     String CHALLENGE_REQUEST = "CHALLENGE_REQUEST";
     String CHALLENGE_RESPONSE = "CHALLENGE_RESPONSE";
     String REJECT = "REJECT";
     String ACCEPT = "ACCEPT";
+    String QUIT = "QUIT";
+    String YOU_WIN = "YOU_WIN";
+    String PLAYER_UNAVAILABLE = "PLAYER_UNAVAILABLE";
+
 }

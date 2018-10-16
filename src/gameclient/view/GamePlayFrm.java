@@ -6,6 +6,7 @@
 package gameclient.view;
 
 import gameclient.controller.UserMatchController;
+import gameclient.listener.OnQuitMessageListener;
 import gameclient.listener.OnResultListener;
 import gameclient.model.Question;
 import gameclient.model.UserMatches;
@@ -24,7 +25,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nobody
  */
-public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener {
+public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener, OnQuitMessageListener {
 
     private List<Question> listQuestions;
     private int currentQuestionNumber = 0;
@@ -32,7 +33,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
     private String selectedAnswer;
     private int matchId;
     private final int userId = UserInfo.getInstance().getId();
-    private UserMatchController userMatchController = new UserMatchController();
+    private final UserMatchController userMatchController = new UserMatchController();
     private ClientSocket client;
     private int opponentId;
     /**
@@ -57,6 +58,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
         this.client.setOnResultListener(this);
         this.timeMatch = new TimeMatch(this);
         this.listQuestions = listQuestions;
+        this.client.setOnQuitMessageListener(this);
         if (listQuestions.isEmpty()) {
             showMessage("Chua co cau hoi trong CSDL");
         } else {
@@ -284,7 +286,8 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitActionPerformed
-        // TODO add your handling code here:
+        // TODO add your hand ling code here:
+        client.sendQuitMsg(userId, opponentId, matchId, Constant.QUIT);
         this.dispose();
         new DashBoardFrm().setVisible(true);
     }//GEN-LAST:event_btnQuitActionPerformed
@@ -386,6 +389,15 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener 
 //                showMessage(String.format("Your correct answer: %d\nMatch draw!", messageDto.getCorrectAnswer()));
                 new GameOverFrm(this.client, this, "Drawn match!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
                 break;
+        }
+    }
+
+    @Override
+    public void onQuitMessageListener(SocketMessageDto messageDto) {
+        if (messageDto.getType().equals(Constant.YOU_WIN)) {
+            showMessage("Your opponent has quit the match");
+            this.dispose();
+            new DashBoardFrm().setVisible(true);
         }
     }
 }

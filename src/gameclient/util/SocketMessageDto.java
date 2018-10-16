@@ -20,12 +20,22 @@ public class SocketMessageDto implements Serializable {
     private String type;
     private String msg;
     private int id;
+    private int idWin;
     private String nickName;
     private int matchId;
     private int correctAnswer;
  
     private List<Question> questionList;
 
+    public int getIdWin() {
+        return idWin;
+    }
+
+    public void setIdWin(int idWin) {
+        this.idWin = idWin;
+    }
+
+    
     public List<Question> getQuestionList() {
         return questionList;
     }

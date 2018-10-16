@@ -17,6 +17,7 @@ import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import gameclient.listener.OnHaveMessageListener;
+import gameclient.listener.OnQuitMessageListener;
 import gameclient.listener.OnResultListener;
 import javax.websocket.OnOpen;
 
@@ -29,6 +30,7 @@ public class ClientSocket {
 
     private OnHaveMessageListener onHaveMessageListener;
     private OnResultListener onResultListener;
+    private OnQuitMessageListener onQuitMessageListener;
     private Session session = null;
     private Gson gson = new Gson();
 
@@ -41,8 +43,16 @@ public class ClientSocket {
         this.onHaveMessageListener = onHaveMessageListener;
     }
 
+    public void setOnQuitMessageListener(OnQuitMessageListener onQuitMessageListener) {
+        this.onQuitMessageListener = onQuitMessageListener;
+    }
+
     public void setOnResultListener(OnResultListener onResultListener) {
         this.onResultListener = onResultListener;
+    }
+
+    public Session getSession() {
+        return session;
     }
 
     @OnOpen
@@ -55,10 +65,16 @@ public class ClientSocket {
         System.err.println(message);
         try {
             SocketMessageDto response = gson.fromJson(message, SocketMessageDto.class);
-            if (response.getType().equals(Constant.RESULT_RESPONSE)) {
-                onResultListener.onResultListener(response);
-            } else {
-                onHaveMessageListener.onHaveMessage(response);
+            switch (response.getType()) {
+                case Constant.RESULT_RESPONSE:
+                    onResultListener.onResultListener(response);
+                    break;
+                case Constant.YOU_WIN:
+                    onQuitMessageListener.onQuitMessageListener(response);
+                    break;
+                default:
+                    onHaveMessageListener.onHaveMessage(response);
+                    break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -67,7 +83,8 @@ public class ClientSocket {
     }
 
     @OnClose
-    public void handleClose() {
+    public void handleClose() throws IOException {
+        
         System.out.println("Disconnected to Server!");
     }
 
@@ -100,6 +117,20 @@ public class ClientSocket {
             SocketMessageDto dto = new SocketMessageDto();
             dto.setType(Constant.CHALLENGE_RESPONSE);
             dto.setId(userId);
+            dto.setMsg(msg);
+            this.session.getBasicRemote().sendText(gson.toJson(dto));
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void sendQuitMsg(int idUserQuit, int idUserWin, int MatchId, String msg) {
+        try {
+            SocketMessageDto dto = new SocketMessageDto();
+            dto.setType(Constant.QUIT);
+            dto.setId(idUserQuit);
+            dto.setIdWin(idUserWin);
+            dto.setMatchId(MatchId);
             dto.setMsg(msg);
             this.session.getBasicRemote().sendText(gson.toJson(dto));
         } catch (IOException ex) {
