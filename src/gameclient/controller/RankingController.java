@@ -14,7 +14,7 @@ public class RankingController extends AbstractTableModel {
 
 	private static final long serialVersionUID = -4241508350527328087L;
 
-	private final String[] colName = { "Pos.", "Name", "Total Score", "Average Score", "Average Time" };
+	private final String[] colName = { "Name", "Total Score", "Average Opponents Score", "Average Time" };
 	private ArrayList<RankDTO> list = new ArrayList<>();
 	private int rank;
 
@@ -43,14 +43,12 @@ public class RankingController extends AbstractTableModel {
 		RankDTO rank = this.list.get(row);
 		switch (column) {
 		case 0:
-			return rank.getPos();
-		case 1:
 			return rank.getNickName();
-		case 2:
+		case 1:
 			return rank.getScore();
-		case 3:
+		case 2:
 			return rank.getAvgScore();
-		case 4:
+		case 3:
 			return rank.getAvgTime();
 		}
 		return null;

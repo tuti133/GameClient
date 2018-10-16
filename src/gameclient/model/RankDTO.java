@@ -2,7 +2,6 @@ package gameclient.model;
 
 public class RankDTO {
 
-	private Integer pos;
 	private String username;
 	private String nickName;
 	private Double score;
@@ -10,24 +9,15 @@ public class RankDTO {
 	private Double avgTime;
 
 	public RankDTO() {
-		
+
 	}
-	
-	public RankDTO(Integer pos, String username, String nickName, Double score, Double avgScore, Double avgTime) {
-		this.pos = pos;
+
+	public RankDTO(String username, String nickName, Double score, Double avgScore, Double avgTime) {
 		this.username = username;
 		this.nickName = nickName;
 		this.score = score;
 		this.avgScore = avgScore;
 		this.avgTime = avgTime;
-	}
-
-	public Integer getPos() {
-		return pos;
-	}
-
-	public void setPos(Integer pos) {
-		this.pos = pos;
 	}
 
 	public String getUsername() {

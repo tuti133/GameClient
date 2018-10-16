@@ -53,6 +53,7 @@ public class RankingFrm extends JFrame {
 		table = new JTable();
 		table.setModel(rankCtrl);
 		table.getTableHeader().setReorderingAllowed(false);
+		table.setAutoCreateRowSorter(true);
 		scrollPane.setViewportView(table);
 		panel.add(scrollPane, "cell 0 1 2 1,grow");
 
