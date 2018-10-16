@@ -23,16 +23,18 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
     private ClientSocket client;
     private final int userId = UserInfo.getInstance().getId();
     private int opponentId;
+    private DashBoardFrm dashBoard;
 
     /**
      * Creates new form GameOverFrm
      *
      * @param client
      */
-    public GameOverFrm(ClientSocket client, GamePlayFrm gamePlayFrm, String matchResult, int totalCorrectAnswers, int opponentId) {
+    public GameOverFrm(ClientSocket client, GamePlayFrm gamePlayFrm, String matchResult, int totalCorrectAnswers, int opponentId, DashBoardFrm dashBoard) {
         initComponents();
         this.setTitle(UserInfo.getInstance().getNickName());
         this.setLocationRelativeTo(null);
+        this.dashBoard = dashBoard;
         this.client = client;
         this.client.setOnHaveMessageListener(this);
         this.gamePlayFrm = gamePlayFrm;
@@ -130,7 +132,7 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
 
     private void goHome() {
         this.dispose();
-        new DashBoardFrm().setVisible(true);
+        this.dashBoard.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -160,7 +162,7 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
                 goHome();
             } else if (message.getMsg().equals(Constant.ACCEPT)) {
                 this.dispose();
-                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), opponentId, client).setVisible(true);
+                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), opponentId, client, this.dashBoard).setVisible(true);
             }
         }
     }

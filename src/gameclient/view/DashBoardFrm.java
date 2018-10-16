@@ -32,7 +32,7 @@ import java.sql.Time;
  * @author Admin
  */
 public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageListener {
-
+    
     private final UserController userController = new UserController();
     private final String AVAILABLE = "Available";
     private final String BUSY = "Busy";
@@ -56,7 +56,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         } catch (Exception ex) {
             Logger.getLogger(DashBoardFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         lbNickname.setText(String.format("Welcome %s!", UserInfo.getInstance().getNickName()));
         lbScore.setText(String.format("Your score: %.1f", UserInfo.getInstance().getScore()));
 
@@ -66,10 +66,10 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         setupData();
         addEventHandle();
     }
-
+    
     private void addEventHandle() {
         tblHome.addMouseListener(new MouseAdapter() {
-
+            
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 
@@ -90,11 +90,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             }
         });
     }
-
+    
     private int showConfirm(String message) {
         return JOptionPane.showConfirmDialog(this, message, "Confirm", JOptionPane.YES_NO_OPTION);
     }
-
+    
     private void setupData() {
         DefaultTableModel model = (DefaultTableModel) tblHome.getModel();
         model.setRowCount(0);
@@ -119,7 +119,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             }
         });
     }
-
+    
     private List<User> getOnlineUser(String status) {
         try {
             GetOnlineUserResponseDto response = userController.getOnlineUser(status);
@@ -133,7 +133,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             return null;
         }
     }
-
+    
     private void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
     }
@@ -343,7 +343,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                     + "bạn bạn muốn chiến ko?", message.getNickName()));
             if (res == JOptionPane.NO_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.REJECT);
-
+                
             } else if (res == JOptionPane.YES_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.ACCEPT);
                 selectedOpponentId = message.getId();
@@ -354,14 +354,15 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
             if (message.getMsg().equals(Constant.REJECT)) {
                 showMessage(String.format("Người chơi %s đã từ chối lời thách đấu của bạn", message.getNickName()));
             } else if (message.getMsg().equals(Constant.ACCEPT)) {
-                this.dispose();
-                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), selectedOpponentId, client);
+//                this.dispose();
+                this.setVisible(false);
+                new GamePlayFrm(message.getQuestionList(), message.getMatchId(), selectedOpponentId, client, this);
             }
-        } else if (message.getType().equals(Constant.PLAYER_UNAVAILABLE)){
+        } else if (message.getType().equals(Constant.PLAYER_UNAVAILABLE)) {
             showMessage("Player is unavailable!");
             setupData();
         }
-
+        
     }
-
+    
 }

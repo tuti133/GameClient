@@ -36,6 +36,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
     private final UserMatchController userMatchController = new UserMatchController();
     private ClientSocket client;
     private int opponentId;
+    private DashBoardFrm dashBoard;
     /**
      * Creates new form DemoQuestion
      */
@@ -49,8 +50,9 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         this.lbTimeLeft.setText(text);
     }
 
-    public GamePlayFrm(List<Question> listQuestions, int matchId, int opponentId, ClientSocket client) {
+    public GamePlayFrm(List<Question> listQuestions, int matchId, int opponentId, ClientSocket client, DashBoardFrm dashBoard) {
         initComponents();
+        this.dashBoard = dashBoard;
         this.setLocationRelativeTo(null);
         this.matchId = matchId;
         this.opponentId = opponentId;
@@ -289,7 +291,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         // TODO add your hand ling code here:
         client.sendQuitMsg(userId, opponentId, matchId, Constant.QUIT);
         this.dispose();
-        new DashBoardFrm().setVisible(true);
+        this.dashBoard.setVisible(true);
     }//GEN-LAST:event_btnQuitActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
@@ -379,15 +381,15 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         switch (Integer.parseInt(messageDto.getMsg())) {
             case Constant.WIN:
 //                showMessage(String.format("Your correct answer: %d\nYou win!", messageDto.getCorrectAnswer()));
-                new GameOverFrm(this.client, this, "You won!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
+                new GameOverFrm(this.client, this, "You won!", messageDto.getCorrectAnswer(), opponentId, this.dashBoard).setVisible(true);
                 break;
             case Constant.LOSE:
 //                showMessage(String.format("Your correct answer: %d\nYou lose!", messageDto.getCorrectAnswer()));
-                new GameOverFrm(this.client, this, "You lost!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
+                new GameOverFrm(this.client, this, "You lost!", messageDto.getCorrectAnswer(), opponentId, this.dashBoard).setVisible(true);
                 break;
             default:
 //                showMessage(String.format("Your correct answer: %d\nMatch draw!", messageDto.getCorrectAnswer()));
-                new GameOverFrm(this.client, this, "Drawn match!", messageDto.getCorrectAnswer(), opponentId).setVisible(true);
+                new GameOverFrm(this.client, this, "Drawn match!", messageDto.getCorrectAnswer(), opponentId, this.dashBoard).setVisible(true);
                 break;
         }
     }
@@ -397,7 +399,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         if (messageDto.getType().equals(Constant.YOU_WIN)) {
             showMessage("Your opponent has quit the match");
             this.dispose();
-            new DashBoardFrm().setVisible(true);
+            this.dashBoard.setVisible(true);
         }
     }
 }
