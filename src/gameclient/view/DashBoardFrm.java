@@ -124,7 +124,7 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
         try {
             GetOnlineUserResponseDto response = userController.getOnlineUser(status);
             if (response == null) {
-                showMessage("Lỗi");
+                showMessage("Error");
                 return null;
             }
             return response.getUsers();
@@ -337,10 +337,9 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
     @Override
     public void onHaveMessage(SocketMessageDto message) {
 
-        //có lời thách đấu tới
+        //co loi thach dau toi
         if (message.getType().equals(Constant.CHALLENGE_REQUEST)) {
-            int res = showConfirm(String.format("Người chơi %s muốn thách đấu vói "
-                    + "bạn bạn muốn chiến ko?", message.getNickName()));
+            int res = showConfirm(String.format("Do you accept challenge invitation from %s?", message.getNickName()));
             if (res == JOptionPane.NO_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.REJECT);
                 
@@ -348,11 +347,11 @@ public class DashBoardFrm extends javax.swing.JFrame implements OnHaveMessageLis
                 client.sendChallengeResponse(message.getId(), Constant.ACCEPT);
                 selectedOpponentId = message.getId();
             }
-        } //tin nhắn trả lời lời thách đấu
+        } //tin nhan tra loi thach dau
         else if (message.getType().equals(Constant.CHALLENGE_RESPONSE)) {
-            //từ chối lời thách đấu
+            //tu choi loi thach dau
             if (message.getMsg().equals(Constant.REJECT)) {
-                showMessage(String.format("Người chơi %s đã từ chối lời thách đấu của bạn", message.getNickName()));
+                showMessage(String.format("%s has rejected your challenge invitation!", message.getNickName()));
             } else if (message.getMsg().equals(Constant.ACCEPT)) {
 //                this.dispose();
                 this.setVisible(false);

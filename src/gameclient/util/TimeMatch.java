@@ -53,6 +53,8 @@ public class TimeMatch implements Runnable {
 
             }
         }
+        
+        this.gamePlayFrm.getSubmitButton().doClick();
     }
 
     public static String showTime(int time) {

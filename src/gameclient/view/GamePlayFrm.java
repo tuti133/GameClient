@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 /**
@@ -351,6 +353,10 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         // TODO add your handling code here:
         this.selectedAnswer = this.rbAns4.getText();
     }//GEN-LAST:event_rbAns4ActionPerformed
+    
+    public JButton getSubmitButton() {
+    	return this.btnSubmit;
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
