@@ -42,6 +42,7 @@ public class TimeMatch implements Runnable {
     public void stop(){
         isRunning = false;
     }
+    
     public void runTime() {
         
         while (time > 0 && isRunning) {
@@ -55,6 +56,7 @@ public class TimeMatch implements Runnable {
         }
         
         this.gamePlayFrm.getSubmitButton().doClick();
+        stop();
     }
 
     public static String showTime(int time) {
