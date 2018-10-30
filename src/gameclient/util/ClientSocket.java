@@ -17,6 +17,7 @@ import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import gameclient.listener.OnHaveMessageListener;
+import gameclient.listener.OnLeaveMatchListener;
 import gameclient.listener.OnQuitMessageListener;
 import gameclient.listener.OnResultListener;
 import javax.websocket.OnOpen;
@@ -31,6 +32,11 @@ public class ClientSocket {
     private OnHaveMessageListener onHaveMessageListener;
     private OnResultListener onResultListener;
     private OnQuitMessageListener onQuitMessageListener;
+    private OnLeaveMatchListener onLeaveMatchListener;
+
+    public void setOnLeaveMatchListener(OnLeaveMatchListener onLeaveMatchListener) {
+        this.onLeaveMatchListener = onLeaveMatchListener;
+    }
     private Session session = null;
     private Gson gson = new Gson();
 
@@ -71,6 +77,9 @@ public class ClientSocket {
                     break;
                 case Constant.YOU_WIN:
                     onQuitMessageListener.onQuitMessageListener(response);
+                    break;
+                case Constant.LEAVE_MATCH:
+                    onLeaveMatchListener.onLeaveMatch(response);
                     break;
                 default:
                     onHaveMessageListener.onHaveMessage(response);
@@ -132,6 +141,17 @@ public class ClientSocket {
             dto.setIdWin(idUserWin);
             dto.setMatchId(MatchId);
             dto.setMsg(msg);
+            this.session.getBasicRemote().sendText(gson.toJson(dto));
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void sendLeaveMatch(int idUserStay) {
+        try {
+            SocketMessageDto dto = new SocketMessageDto();
+            dto.setType(Constant.LEAVE_MATCH);
+            dto.setIdStay(idUserStay);
             this.session.getBasicRemote().sendText(gson.toJson(dto));
         } catch (IOException ex) {
             Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);

@@ -21,6 +21,15 @@ public class SocketMessageDto implements Serializable {
     private String msg;
     private int id;
     private int idWin;
+    private int idStay;
+
+    public int getIdStay() {
+        return idStay;
+    }
+
+    public void setIdStay(int idStay) {
+        this.idStay = idStay;
+    }
     private String nickName;
     private int matchId;
     private int correctAnswer;

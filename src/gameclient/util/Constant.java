@@ -31,6 +31,7 @@ public interface Constant {
     String REJECT = "REJECT";
     String ACCEPT = "ACCEPT";
     String QUIT = "QUIT";
+    String LEAVE_MATCH = "LEAVE_MATCH";
     String YOU_WIN = "YOU_WIN";
     String PLAYER_UNAVAILABLE = "PLAYER_UNAVAILABLE";
 

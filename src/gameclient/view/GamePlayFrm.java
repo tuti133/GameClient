@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
  * @author Nobody
  */
 public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener, OnQuitMessageListener {
-
+    
     private List<Question> listQuestions;
     private int currentQuestionNumber = 0;
     private int correctAnswer = 0;
@@ -42,16 +42,16 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
     /**
      * Creates new form DemoQuestion
      */
-
+    
     private TimeMatch timeMatch;
-
+    
     public GamePlayFrm() {
     }
-
+    
     public void setLbTimeLeft(String text) {
         this.lbTimeLeft.setText(text);
     }
-
+    
     public GamePlayFrm(List<Question> listQuestions, int matchId, int opponentId, ClientSocket client, DashBoardFrm dashBoard) {
         initComponents();
         this.dashBoard = dashBoard;
@@ -69,7 +69,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
             setDisplayQuestion(listQuestions.get(currentQuestionNumber));
         }
     }
-
+    
     private void setDisplayQuestion(Question question) {
         this.lbQuestionContent.setText(question.getContent());
         this.rbAns1.setText(question.getAnswer1());
@@ -81,14 +81,14 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         this.selectedAnswer = "";
         this.buttonGroup1.clearSelection();
     }
-
+    
     private boolean checkAnswer(String answer, Question question) {
         if (answer.equals(question.getKey())) {
             return true;
         }
         return false;
     }
-
+    
     private void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
     }
@@ -123,6 +123,11 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         jSeparator3 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         btnQuit.setText("Quit");
         btnQuit.addActionListener(new java.awt.event.ActionListener() {
@@ -303,7 +308,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
             if (checkAnswer(selectedAnswer, listQuestions.get(currentQuestionNumber))) {
                 this.correctAnswer++;
             }
-
+            
             timeMatch.stop();
             int time = Constant.TIME_PLAY - timeMatch.getTime();
             UserMatches userMatches = new UserMatches();
@@ -353,9 +358,21 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         // TODO add your handling code here:
         this.selectedAnswer = this.rbAns4.getText();
     }//GEN-LAST:event_rbAns4ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            // TODO add your handling code here:
+            client.sendQuitMsg(userId, opponentId, matchId, Constant.QUIT);
+            client.getSession().close();
+            System.exit(0);
+        } catch (IOException ex) {
+            Logger.getLogger(GamePlayFrm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_formWindowClosing
     
     public JButton getSubmitButton() {
-    	return this.btnSubmit;
+        return this.btnSubmit;
     }
 
 
@@ -399,7 +416,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
                 break;
         }
     }
-
+    
     @Override
     public void onQuitMessageListener(SocketMessageDto messageDto) {
         if (messageDto.getType().equals(Constant.YOU_WIN)) {

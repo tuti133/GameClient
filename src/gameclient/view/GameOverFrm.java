@@ -6,6 +6,7 @@
 package gameclient.view;
 
 import gameclient.listener.OnHaveMessageListener;
+import gameclient.listener.OnLeaveMatchListener;
 import gameclient.util.ClientSocket;
 import gameclient.util.Constant;
 import gameclient.util.SocketMessageDto;
@@ -17,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nobody
  */
-public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageListener {
+public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageListener, OnLeaveMatchListener {
 
     private GamePlayFrm gamePlayFrm;
     private ClientSocket client;
@@ -37,6 +38,7 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
         this.dashBoard = dashBoard;
         this.client = client;
         this.client.setOnHaveMessageListener(this);
+        this.client.setOnLeaveMatchListener(this);
         this.gamePlayFrm = gamePlayFrm;
         this.opponentId = opponentId;
         this.lbMatchResult.setText(matchResult);
@@ -118,6 +120,7 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
 
     private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
         // TODO add your handling code here:
+        this.client.sendLeaveMatch(opponentId);
         goHome();
     }//GEN-LAST:event_btnHomeActionPerformed
 
@@ -133,6 +136,7 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
     private void goHome() {
         this.dispose();
         this.dashBoard.setVisible(true);
+        this.client.setOnHaveMessageListener(this.dashBoard);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -154,7 +158,9 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
                 client.sendChallengeResponse(message.getId(), Constant.REJECT);
                 goHome();
             }
-        } //tin nhắn trả lời lời thách đấu
+        }
+        
+        //tin nhắn trả lời lời thách đấu
         else if (message.getType().equals(Constant.CHALLENGE_RESPONSE)) {
             //từ chối lời thách đấu
             if (message.getMsg().equals(Constant.REJECT)) {
@@ -173,5 +179,13 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
 
     private void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
+    }
+
+    @Override
+    public void onLeaveMatch(SocketMessageDto message) {
+        if (message.getType().equals(Constant.LEAVE_MATCH)){
+            showMessage("Your opponent has left the match!");
+            goHome();
+        }
     }
 }
