@@ -5,7 +5,7 @@
  */
 package gameclient.model.response;
 
-import gameclient.model.ResponseDto;
+import gameclient.dto.ResponseDto;
 import gameclient.model.User;
 
 /**

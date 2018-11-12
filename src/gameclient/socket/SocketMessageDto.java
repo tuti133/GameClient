@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gameclient.util;
+package gameclient.socket;
 
 import gameclient.model.Question;
 import java.io.Serializable;

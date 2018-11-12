@@ -5,7 +5,7 @@
  */
 package gameclient.util;
 
-import gameclient.model.ResponseDto;
+import gameclient.dto.ResponseDto;
 import gameclient.model.response.UserLoginResponseDto;
 import java.io.BufferedReader;
 import java.io.IOException;

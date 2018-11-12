@@ -6,7 +6,7 @@
 package gameclient.view;
 
 import gameclient.controller.UserController;
-import gameclient.model.ResponseDto;
+import gameclient.dto.ResponseDto;
 import gameclient.model.request.UserRegisterRequestDto;
 import gameclient.util.Constant;
 import java.io.IOException;

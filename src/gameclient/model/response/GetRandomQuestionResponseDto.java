@@ -6,7 +6,7 @@
 package gameclient.model.response;
 
 import gameclient.model.Question;
-import gameclient.model.ResponseDto;
+import gameclient.dto.ResponseDto;
 import java.util.List;
 
 /**

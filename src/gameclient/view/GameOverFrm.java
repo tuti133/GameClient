@@ -7,9 +7,9 @@ package gameclient.view;
 
 import gameclient.listener.OnHaveMessageListener;
 import gameclient.listener.OnLeaveMatchListener;
-import gameclient.util.ClientSocket;
+import gameclient.socket.ClientSocket;
 import gameclient.util.Constant;
-import gameclient.util.SocketMessageDto;
+import gameclient.socket.SocketMessageDto;
 import gameclient.util.UserInfo;
 import java.awt.Component;
 import javax.swing.JOptionPane;

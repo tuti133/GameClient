@@ -2,22 +2,22 @@ package gameclient.model.response;
 
 import java.util.List;
 
-import gameclient.model.RankDTO;
-import gameclient.model.ResponseDto;
+import gameclient.dto.RankDto;
+import gameclient.dto.ResponseDto;
 
 public class RankResponseDTO extends ResponseDto {
 
-	private List<RankDTO> rankList;
+	private List<RankDto> rankList;
 
 	public RankResponseDTO() {
 		
 	}
 
-	public List<RankDTO> getRankList() {
+	public List<RankDto> getRankList() {
 		return rankList;
 	}
 
-	public void setRankList(List<RankDTO> rankList) {
+	public void setRankList(List<RankDto> rankList) {
 		this.rankList = rankList;
 	}
 

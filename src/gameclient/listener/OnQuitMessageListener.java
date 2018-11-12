@@ -5,7 +5,7 @@
  */
 package gameclient.listener;
 
-import gameclient.util.SocketMessageDto;
+import gameclient.socket.SocketMessageDto;
 
 /**
  *

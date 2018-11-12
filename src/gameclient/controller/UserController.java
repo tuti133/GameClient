@@ -5,7 +5,7 @@
  */
 package gameclient.controller;
 
-import gameclient.model.ResponseDto;
+import gameclient.dto.ResponseDto;
 import gameclient.model.request.UserRegisterRequestDto;
 import gameclient.model.response.GetOnlineUserResponseDto;
 import gameclient.util.HttpClientUtils;

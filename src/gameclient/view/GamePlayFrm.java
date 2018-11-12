@@ -10,9 +10,9 @@ import gameclient.listener.OnQuitMessageListener;
 import gameclient.listener.OnResultListener;
 import gameclient.model.Question;
 import gameclient.model.UserMatches;
-import gameclient.util.ClientSocket;
+import gameclient.socket.ClientSocket;
 import gameclient.util.Constant;
-import gameclient.util.SocketMessageDto;
+import gameclient.socket.SocketMessageDto;
 import gameclient.util.TimeMatch;
 import gameclient.util.UserInfo;
 import java.io.IOException;
@@ -28,30 +28,25 @@ import javax.swing.JOptionPane;
  * @author Nobody
  */
 public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener, OnQuitMessageListener {
-    
+
     private List<Question> listQuestions;
     private int currentQuestionNumber = 0;
     private int correctAnswer = 0;
     private String selectedAnswer;
     private int matchId;
+    private int opponentId;
     private final int userId = UserInfo.getInstance().getId();
     private final UserMatchController userMatchController = new UserMatchController();
     private ClientSocket client;
-    private int opponentId;
     private DashBoardFrm dashBoard;
+    private TimeMatch timeMatch;
+
     /**
      * Creates new form DemoQuestion
      */
-    
-    private TimeMatch timeMatch;
-    
     public GamePlayFrm() {
     }
-    
-    public void setLbTimeLeft(String text) {
-        this.lbTimeLeft.setText(text);
-    }
-    
+
     public GamePlayFrm(List<Question> listQuestions, int matchId, int opponentId, ClientSocket client, DashBoardFrm dashBoard) {
         initComponents();
         this.dashBoard = dashBoard;
@@ -69,7 +64,11 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
             setDisplayQuestion(listQuestions.get(currentQuestionNumber));
         }
     }
-    
+
+    public void setLbTimeLeft(String text) {
+        this.lbTimeLeft.setText(text);
+    }
+
     private void setDisplayQuestion(Question question) {
         this.lbQuestionContent.setText(question.getContent());
         this.rbAns1.setText(question.getAnswer1());
@@ -81,14 +80,14 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         this.selectedAnswer = "";
         this.buttonGroup1.clearSelection();
     }
-    
+
     private boolean checkAnswer(String answer, Question question) {
         if (answer.equals(question.getKey())) {
             return true;
         }
         return false;
     }
-    
+
     private void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
     }
@@ -301,14 +300,17 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         this.dashBoard.setVisible(true);
     }//GEN-LAST:event_btnQuitActionPerformed
 
+    private void pointCalculate() {
+        if (checkAnswer(selectedAnswer, listQuestions.get(currentQuestionNumber))) {
+            this.correctAnswer++;
+        }
+    }
+
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         try {
             // TODO add your handling code here:
             btnSubmit.setEnabled(false);
-            if (checkAnswer(selectedAnswer, listQuestions.get(currentQuestionNumber))) {
-                this.correctAnswer++;
-            }
-            
+
             timeMatch.stop();
             int time = Constant.TIME_PLAY - timeMatch.getTime();
             UserMatches userMatches = new UserMatches();
@@ -343,7 +345,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         currentQuestionNumber++;
         setDisplayQuestion(listQuestions.get(currentQuestionNumber));
     }//GEN-LAST:event_btnNextActionPerformed
-
+          
     private void rbAns2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAns2ActionPerformed
         // TODO add your handling code here:
         this.selectedAnswer = this.rbAns2.getText();
@@ -361,16 +363,15 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            // TODO add your handling code here:
             client.sendQuitMsg(userId, opponentId, matchId, Constant.QUIT);
             client.getSession().close();
             System.exit(0);
         } catch (IOException ex) {
             Logger.getLogger(GamePlayFrm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_formWindowClosing
-    
+
     public JButton getSubmitButton() {
         return this.btnSubmit;
     }
@@ -416,7 +417,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
                 break;
         }
     }
-    
+
     @Override
     public void onQuitMessageListener(SocketMessageDto messageDto) {
         if (messageDto.getType().equals(Constant.YOU_WIN)) {

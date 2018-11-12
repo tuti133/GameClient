@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gameclient.util;
+package gameclient.socket;
 
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import gameclient.listener.OnHaveMessageListener;
 import gameclient.listener.OnLeaveMatchListener;
 import gameclient.listener.OnQuitMessageListener;
 import gameclient.listener.OnResultListener;
+import gameclient.util.Constant;
 import javax.websocket.OnOpen;
 
 /**

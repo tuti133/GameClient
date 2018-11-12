@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import gameclient.controller.UserController;
 import gameclient.model.User;
 import gameclient.model.response.GetOnlineUserResponseDto;
-import gameclient.util.ClientSocket;
+import gameclient.socket.ClientSocket;
 import gameclient.util.Constant;
 import gameclient.util.UserInfo;
 import java.awt.event.MouseAdapter;
@@ -23,7 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import gameclient.listener.OnHaveMessageListener;
-import gameclient.util.SocketMessageDto;
+import gameclient.socket.SocketMessageDto;
 import gameclient.util.TimeMatch;
 import java.sql.Time;
 

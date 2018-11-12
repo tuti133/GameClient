@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import gameclient.model.RankDTO;
+import gameclient.dto.RankDto;
 import gameclient.model.response.RankResponseDTO;
 import gameclient.util.HttpClientUtils;
 
@@ -15,7 +15,7 @@ public class RankingController extends AbstractTableModel {
 	private static final long serialVersionUID = -4241508350527328087L;
 
 	private final String[] colName = { "Name", "Total Score", "Average Opponents Score", "Average Time" };
-	private ArrayList<RankDTO> list = new ArrayList<>();
+	private ArrayList<RankDto> list = new ArrayList<>();
 	private int rank;
 
 	public RankingController() {
@@ -40,7 +40,7 @@ public class RankingController extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int column) {
-		RankDTO rank = this.list.get(row);
+		RankDto rank = this.list.get(row);
 		switch (column) {
 		case 0:
 			return rank.getNickName();
