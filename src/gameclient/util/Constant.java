@@ -11,7 +11,7 @@ package gameclient.util;
  */
 public interface Constant {
 
-    String BASE_URL = "http://localhost:8080/api/";
+    String BASE_URL = "http://172.20.10.4:8080/api/";
     String ERROR = "1";
     String ONLINE_STATUS = "0";
     String OFFLINE_STATUS = "1";

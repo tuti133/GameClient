@@ -42,7 +42,7 @@ public class ClientSocket {
     private Gson gson = new Gson();
 
     public ClientSocket() throws Exception {
-        URI uri = new URI("ws://localhost:8080/game");
+        URI uri = new URI("ws://172.20.10.4:8080/game");
         session = ContainerProvider.getWebSocketContainer().connectToServer(this, uri);
     }
 

@@ -310,7 +310,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         try {
             // TODO add your handling code here:
             btnSubmit.setEnabled(false);
-
+            pointCalculate();
             timeMatch.stop();
             int time = Constant.TIME_PLAY - timeMatch.getTime();
             UserMatches userMatches = new UserMatches();
@@ -339,9 +339,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
             this.btnNext.setEnabled(false);
             this.btnSubmit.setEnabled(true);
         }
-        if (checkAnswer(selectedAnswer, listQuestions.get(currentQuestionNumber))) {
-            this.correctAnswer++;
-        }
+        pointCalculate();
         currentQuestionNumber++;
         setDisplayQuestion(listQuestions.get(currentQuestionNumber));
     }//GEN-LAST:event_btnNextActionPerformed
