@@ -153,19 +153,19 @@ public class RegisterFrm extends javax.swing.JFrame {
         try {
             ResponseDto response = userController.registerUser(requestDto);
             if (response == null) {
-                showMessage("Đã xảy ra lỗi! ");
+                showMessage("Error! No response!");
                 return;
             }
             if (response.getErrorCode().equals(Constant.ERROR)) {
                 showMessage(response.getMsg());
                 return;
             }
-            showMessage("Đăng kí tài khoản thành công!");
+            showMessage("Your account is registered successfully!");
             goToLoginFrm();
             
         } catch (IOException ex) {
             Logger.getLogger(RegisterFrm.class.getName()).log(Level.SEVERE, null, ex);
-            showMessage("Đã xảy ra lỗi! ");
+            showMessage("Error! Can't complete registration!");
         }
 
     }//GEN-LAST:event_btnRegisterActionPerformed
@@ -182,7 +182,7 @@ public class RegisterFrm extends javax.swing.JFrame {
         
         String confirmPw = String.valueOf(pf2.getPassword());
         if (!password.equals(confirmPw)) {
-            showMessage("Password và confirm password cần giống nhau!");
+            showMessage("Password and Confirm Password must match!");
             return false;
         }
         
@@ -192,11 +192,11 @@ public class RegisterFrm extends javax.swing.JFrame {
     
     private boolean validate(String name, String value) {
         if (value.isEmpty()) {
-            showMessage(name + " không được bỏ trống");
+            showMessage(name + " must not be empty!");
             return false;
         }
         if (!(value.length() > 5 && value.length() < 15)) {
-            showMessage(name + " phải từ 6-14 kí tự");
+            showMessage(name + " must have 6-14 characters!");
             return false;
         }
         return true;

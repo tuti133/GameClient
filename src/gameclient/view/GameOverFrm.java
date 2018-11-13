@@ -149,9 +149,9 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
 
     @Override
     public void onHaveMessage(SocketMessageDto message) {
-        //có lời thách đấu tới
+        //cĂ³ lá»�i thĂ¡ch Ä‘áº¥u tá»›i
         if (message.getType().equals(Constant.CHALLENGE_REQUEST)) {
-            int res = showConfirm(String.format("%s want to play again. Accept? ", message.getNickName()));
+            int res = showConfirm(String.format("%s wants to play again. Accept? ", message.getNickName()));
             if (res == JOptionPane.YES_OPTION) {
                 client.sendChallengeResponse(message.getId(), Constant.ACCEPT);
             } else {
@@ -160,9 +160,9 @@ public class GameOverFrm extends javax.swing.JFrame implements OnHaveMessageList
             }
         }
         
-        //tin nhắn trả lời lời thách đấu
+        //tin nháº¯n tráº£ lá»�i lá»�i thĂ¡ch Ä‘áº¥u
         else if (message.getType().equals(Constant.CHALLENGE_RESPONSE)) {
-            //từ chối lời thách đấu
+            //tá»« chá»‘i lá»�i thĂ¡ch Ä‘áº¥u
             if (message.getMsg().equals(Constant.REJECT)) {
                 showMessage(String.format("%s has rejected your request.", message.getNickName()));
                 goHome();

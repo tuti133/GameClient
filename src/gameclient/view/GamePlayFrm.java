@@ -59,7 +59,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
         this.listQuestions = listQuestions;
         this.client.setOnQuitMessageListener(this);
         if (listQuestions.isEmpty()) {
-            showMessage("Chua co cau hoi trong CSDL");
+            showMessage("There's no question in database!");
         } else {
             setDisplayQuestion(listQuestions.get(currentQuestionNumber));
         }
@@ -419,7 +419,7 @@ public class GamePlayFrm extends javax.swing.JFrame implements OnResultListener,
     @Override
     public void onQuitMessageListener(SocketMessageDto messageDto) {
         if (messageDto.getType().equals(Constant.YOU_WIN)) {
-            showMessage("Your opponent has quit the match");
+            showMessage("Your opponent has left the match");
             this.dispose();
             this.dashBoard.setVisible(true);
         }
